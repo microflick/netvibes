@@ -68,16 +68,16 @@
 					
 					start.inject(widget.body.empty());
 					
-					UWA.Data.getJson(widget.getValue('defUrl'),
-									HighCharts.displayChart
-								);
+					//UWA.Data.getJson(widget.getValue('defUrl'),
+					//				HighCharts.displayChart
+					//			);
 					
-					/*UWA.Data.request(widget.getValue('defUrl'), {
+					UWA.Data.request(widget.getValue('defUrl'), {
 						method : 'get',
                         type: 'json',
                         onComplete: HighCharts.displayChart,
                         onFailure: HighCharts.displayError
-                    });*/
+                    });
                 },
 				displayChart: function (data) {
 					$('#container').highcharts(data);
