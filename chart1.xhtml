@@ -20,7 +20,10 @@
 		
         <!-- Application Preferences -->
         <widget:preferences>
-            <widget:preference type="text" name="defUrl" label="Default URL" defaultValue="https://raw.github.com/arulprasathr/netvibes/master/data/chart1-data.json"/>
+			<widget:preference name="defUrl" type="list" label="JSON Data" defaultValue="https://raw.github.com/arulprasathr/netvibes/master/data/chart1-data.json">
+                <widget:option value="https://raw.github.com/arulprasathr/netvibes/master/data/chart1-data.json" label="Chart 1" />
+                <widget:option value="https://raw.github.com/arulprasathr/netvibes/master/data/chart2-data.json" label="BPG Status" />
+            </widget:preference>
         </widget:preferences>
 
         <!-- Application Styles -->
