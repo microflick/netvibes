@@ -1,0 +1,52 @@
+{
+	"chart": {
+		"type": "bar"
+	},
+	"title": {
+		"text": "Background Process Status"
+	},
+	"subtitle": {
+		"text": "State : Active"
+	},
+	"xAxis": {
+		"categories": [
+			"BGP-0001",
+			"BGP-0002",
+			"BGP-0003",
+			"BGP-0004",
+			"BGP-0005",
+			"BGP-0006",
+			"BGP-0007",
+			"BGP-0008",
+			"BGP-0009",
+			"BGP-0010",
+			"BGP-0011",
+			"BGP-0012"
+		]
+	},
+	"yAxis": {
+		"min": 0,
+		"max" : 100,
+		"title": {
+			"text": "Percent of completion"
+		}
+	},
+	"tooltip": {
+		"headerFormat": "<span style='font-size:10px'>{point.key}</span><table>",
+		"pointFormat": "<tr><td style='color:{series.color};padding:0'>{series.name}: </td><td style='padding:0'><b>{point.y:.1f} %</b></td></tr>",
+		"footerFormat": "</table>",
+		"shared": true,
+		"useHTML": true
+	},
+	"plotOptions": {
+		"column": {
+			"pointPadding": 0.2,
+			"borderWidth": 0
+		}
+	},
+	"series": [{
+		"name": "Active",
+		"data": [{"y" : 99.9, "color" : "#00190c"} , {"y" : 81.5, "color" : "#004c24"}, {"y" : 66.4, "color" : "#007f3c"}, {"y" : 59.2, "color" : "#00b254"}, {"y" : 24.0, "color" : "#00e56c"}, {"y" : 16.0, "color" : "#19ff85"}, {"y" : 35.6, "color" : "#00e56c"}, {"y" : 48.5, "color" : "#00b254"}, {"y" : 16.4, "color" : "#007f3c"}, {"y" : 94.1, "color" : "#004c24"}, {"y" : 95.6, "color" : "#00190c"}, {"y" : 14.4, "color" : "#19ff85"}]
+
+	}]
+}
