@@ -1,16 +1,24 @@
 {
 	"chart": {
-		"type" : "pie"
+			"type" : "pie"
 	},
 	"title": {
-		"text": "Export Controlled Data"
+			"text": "Export Controlled Data"
 	},
 	"subtitle": {
-		"text": "Click the slices to view the sub classification"
+			"text": "Click the slices to view the sub classification"
 	},
 	"xAxis": {
-		"categories": [
-		]
+			"categories": [
+			]
+	},
+	"plotOptions": {
+		"series": {
+			"dataLabels": {
+				"enabled": true,
+				"format": "{point.name}: {point.y:.1f}%"
+			}
+		}
 	},
 	"tooltip": {
 		"headerFormat": "<span style='font-size:10px'>{point.key}</span><table>",
@@ -18,55 +26,37 @@
 		"footerFormat": "</table>",
 		"shared": true,
 		"useHTML": true
-	},
-	"plotOptions": {
-		"series": {
-				"dataLabels": {
-					"enabled": true,
-					"format": "{point.name}: {point.y:.1f}%"
-				}
-			}
-	},
+	}, 
 	"series": [{
 		"name" : "Class",
 		"colorByPoint": true,	
 		"data" : [{
-					"name" : "ITAR",
-                    "y": 13,
-					"drilldown": "ITAR"
-                }, {
-					"name" : "EAR",
-                    "y": 23,
-					"drilldown": "EAR"
-				}, {
-					"name" : "Public",
-                    "y": 23,
-					"drilldown": "Public"
-                }, {
-					"name" : "Unclassified",
-                    "y": 19,
-					"drilldown":"Unclassified"
-                }],
-        "showInLegend": true,
-        "dataLabels": {
-                "enabled": true
-            }
+				"name":"ITAR",
+				"y":43.57,
+				"drilldown":"ITAR"
+			},{
+				"name":"EAR",
+				"y":15.74,
+				"drilldown":"EAR"
+			},{
+				"name":"Public",
+				"y":8.59,
+				"drilldown":"Public"
+			}]
         }],
-		"drilldown": [{
-						"name" : "ITAR",
-						"id": "ITAR",
-						"data" : [["v1",10],["v2",3]]
-					}, {
-						"name" : "EAR",
-						"id" : "EAR",
-						"data" : [["v1",10],["v2",13]]
-					}, {
-						"name" : "Public",
-						"id": "Public",
-						"data" : [["v1",10],["v2",13]]
-					}, {
-						"name" : "Unclassified",
-						"id": "Unclassified",
-						"data" : [["v1",10],["v2",19]]
-					}]
+	"drilldown": {
+		"series": [{
+				"name":"ITAR",
+				"id":"ITAR",
+				"data":[["VII(a)",26.61],["V11(b)",16.96]]
+			},{
+				"name":"EAR",
+				"id":"EAR",
+				"data":[["EAR 99",8.01],["9E991",7.73]]
+			},{
+				"name":"Public",
+				"id":"Public",
+				"data":[["Internal",6.72],["External",1.87]]
+		}]
+	}
 }
