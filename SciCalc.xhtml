@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:widget="http://www.netvibes.com/ns/">
+    <head>
+        <!-- Application Infos -->
+        <title>Scientific Calculator</title>
+        <meta name="description" content="Scientific Calculator" />
+        <meta name="author" content="Arul Rajendiran" />
+        <meta name="version" content="1.0" />
+        <meta name="apiVersion" content="1.3" />
+        <meta name="debugMode" content="true" />
+        <meta name="strictMode" content="false" />
+
+        <!-- UWA Environment -->
+        <link rel="stylesheet" type="text/css" href="http://uwa.netvibes.com/lib/c/UWA/assets/css/standalone.css" />
+        <script type="text/javascript" src="http://uwa.netvibes.com/lib/c/UWA/js/UWA_Standalone_Alone.js"></script>
+		
+        <!-- Application Preferences -->
+        <widget:preferences>
+            <!--<widget:preference type="text" name="defUrl" label="Default URL" defaultValue="http://3ds.com"/>-->
+        </widget:preferences>
+
+        <!-- Application Styles -->
+        <style type="text/css">
+			.SciCalc {
+			}
+			
+			.SciCalc div#main {
+				padding:10px;
+			}
+			
+			.SciCalc div.clear {
+				clear:both;
+				height:0px;
+			}
+			
+			.SciCalc div#keypad {
+				width: 100%;
+			}
+			.SciCalc div#keypad input[type = text] {
+				width: 300px;
+			}
+			
+			.SciCalc div#leftKeys {
+				float:left;
+			}
+			
+			.SciCalc div#rightKeys {
+				float:right;
+			}
+        </style>
+
+        <!-- Application Source -->
+        <script type="text/javascript">
+        //<![CDATA[
+
+            /*
+                We create the global MyWidget object (it could be any other name).
+                This object will be used to store variables and function.
+            */
+            var SciCalc = {
+				elements : {},
+
+                /*
+                    The onLoad() function is the first one, triggered by widget.onLoad.
+                    Its use is to display a "Loading" message, then call the next method.
+                */
+				createButton : function ( btn_id , sClass, symbol , clickHandler) {
+					var btn = UWA.createElement('button',{
+						class : sClass ,
+						id: btn_id,
+						events : {click : SciCalc.onBtnClick}
+						
+						});
+					btn.setHTML(symbol)
+					return btn;
+				},
+				onBtnClick : function (event){
+					var ipText = widget.body.getElements('#txt_Input')[0];
+					var btn = UWA.Event.getElement(event);
+					var sClass = btn.getAttribute("class");
+					
+					var sIpVal = ipText.value;
+					if(sClass == 'key_btnNormal'){
+						var retVal = sIpVal + btn.getHTML();
+						ipText.setAttributes({value : retVal});
+					}else if(sClass == 'key_btnEnter'){
+						var retValue = '';
+						try{
+							retValue = eval(sIpVal);
+						}catch (ex){
+							retValue = 'ERROR! CHECK INPUT';
+						}
+						ipText.setAttributes({value : retValue});
+					} else if(sClass == 'key_btnNeg'){
+						var retVal = '-'+sIpVal;
+						ipText.setAttributes({value : retVal});
+					}else if(sClass == 'key_btnClear'){
+						ipText.setAttributes({value : ''});
+					}
+					
+					//ipText.focus();
+					event.preventDefault();
+				},
+				addSpace : function ( ele ) {
+					var tDiv = UWA.createElement('div',{class: 'clear'});
+					ele.addContent(tDiv);
+				},
+				
+                onLoad: function() {
+
+                    widget.body.setContent('Loading...');
+					var ele = {},
+					start = UWA.createElement('div', 
+								{
+									class: 'SciCalc',
+									id: 'SciCalc',
+									html: {
+										tag: 'div',
+										id: 'main',
+										html : [
+											{tag : 'div',class : 'clear'},
+											{tag : 'div' , id : 'keypad', html : [{tag : 'div',id : 'leftKeys'},{tag : 'div',id : 'rightKeys'}]}									
+										]									
+									}										
+								});
+					ele.keypad = start.getElements('#keypad')[0];
+					ele.leftKeys = start.getElements('#leftKeys')[0];
+					ele.rightKeys = start.getElements('#rightKeys')[0];
+					
+					var txt_Input = UWA.createElement('input', {type: 'text', id: 'txt_Input',readonly : 'readonly'});
+					var key_btnToMem = SciCalc.createButton('key_btnToMem','','&#8681;');
+					var txt_Memory = UWA.createElement('input', {type: 'text', id: 'txt_Memory',readonly : 'readonly'});
+					var key_btnFromMem = SciCalc.createButton('key_btnFromMem','','&#8679;');
+					
+					var key_btnNum1 = SciCalc.createButton('key_btnNum1','key_btnNormal','1');
+					var key_btnNum2 = SciCalc.createButton('key_btnNum2','key_btnNormal','2');
+					var key_btnNum3 = SciCalc.createButton('key_btnNum3','key_btnNormal','3');
+					var key_btnNum4 = SciCalc.createButton('key_btnNum1','key_btnNormal','4');
+					var key_btnNum5 = SciCalc.createButton('key_btnNum2','key_btnNormal','5');
+					var key_btnNum6 = SciCalc.createButton('key_btnNum3','key_btnNormal','6');
+					var key_btnNum7 = SciCalc.createButton('key_btnNum1','key_btnNormal','7');
+					var key_btnNum8 = SciCalc.createButton('key_btnNum2','key_btnNormal','8');
+					var key_btnNum9 = SciCalc.createButton('key_btnNum3','key_btnNormal','9');
+					var key_btnDot = SciCalc.createButton('key_btnNum1','key_btnNormal','.');
+					var key_btnNum0 = SciCalc.createButton('key_btnNum2','key_btnNormal','0');
+					var key_btnNeg = SciCalc.createButton('key_btnNum3','key_btnNeg','&plusmn;');
+					var key_btnOpenBrace = SciCalc.createButton('key_btnNum1','key_btnNormal','(');
+					var key_btnCloseBrace = SciCalc.createButton('key_btnNum2','key_btnNormal',')');
+					var key_btnClear = SciCalc.createButton('key_btnNum3','key_btnClear','CE');
+					
+					var key_btnAdd = SciCalc.createButton('key_btnAdd','key_btnNormal','+');
+					var key_btnSub = SciCalc.createButton('key_btnSub','key_btnNormal','-');
+					//var key_btnMult = SciCalc.createButton('key_btnMult','key_btnNormal','&times;');
+					//var key_btnDiv = SciCalc.createButton('key_btnDiv','key_btnNormal','&divide;');
+					var key_btnMult = SciCalc.createButton('key_btnMult','key_btnNormal','*');
+					var key_btnDiv = SciCalc.createButton('key_btnDiv','key_btnNormal','/');
+					
+					var key_btnEnter = SciCalc.createButton('key_btnEnter','key_btnEnter','=');
+
+			
+					ele.rightKeys.addContent(key_btnToMem);
+					ele.leftKeys.addContent(txt_Input);
+					SciCalc.addSpace(ele.leftKeys);
+					SciCalc.addSpace(ele.rightKeys);
+					
+					ele.rightKeys.addContent(key_btnFromMem);
+					ele.leftKeys.addContent(txt_Memory);
+					
+					//row-1
+					SciCalc.addSpace(ele.leftKeys);
+					ele.leftKeys.addContent(key_btnNum1);
+					ele.leftKeys.addContent(key_btnNum2);
+					ele.leftKeys.addContent(key_btnNum3);
+					
+					SciCalc.addSpace(ele.rightKeys);
+					ele.rightKeys.addContent(key_btnAdd);
+					ele.rightKeys.addContent(key_btnSub);
+					ele.rightKeys.addContent(key_btnMult);
+					ele.rightKeys.addContent(key_btnDiv);
+					
+					//row-2
+					SciCalc.addSpace(ele.leftKeys);
+					ele.leftKeys.addContent(key_btnNum4);
+					ele.leftKeys.addContent(key_btnNum5);
+					ele.leftKeys.addContent(key_btnNum6);
+					
+					//row-3
+					SciCalc.addSpace(ele.leftKeys);
+					ele.leftKeys.addContent(key_btnNum7);
+					ele.leftKeys.addContent(key_btnNum8);
+					ele.leftKeys.addContent(key_btnNum9);
+					
+					//row-4
+					SciCalc.addSpace(ele.leftKeys);
+					ele.leftKeys.addContent(key_btnDot);
+					ele.leftKeys.addContent(key_btnNum0);
+					ele.leftKeys.addContent(key_btnNeg);
+
+					//row-4
+					SciCalc.addSpace(ele.leftKeys);
+					ele.leftKeys.addContent(key_btnOpenBrace);
+					ele.leftKeys.addContent(key_btnCloseBrace);
+					ele.leftKeys.addContent(key_btnClear);
+					
+					SciCalc.addSpace(ele.rightKeys);
+					ele.rightKeys.addContent(key_btnEnter);
+					
+					start.inject(widget.body.empty());
+                }
+            };
+
+            /*
+                The "onLoad" event is the very first event triggered when
+                the widget is fully loaded or when the preferences are validated.
+
+                Here, we add MyWidget.onLoad() function as "onLoad" event
+                listener on the widget.
+            */
+            widget.addEvent('onLoad', SciCalc.onLoad);
+
+        //]]>
+        </script>
+    </head>
+    <body>
+        <p>Loading ...</p>
+    </body>
+</html>
