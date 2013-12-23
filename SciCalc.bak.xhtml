@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:widget="http://www.netvibes.com/ns/">
+    <head>
+        <!-- Application Infos -->
+        <title>Scientific Calculator</title>
+        <meta name="description" content="Scientific Calculator" />
+        <meta name="author" content="Arul Rajendiran" />
+        <meta name="version" content="1.0" />
+        <meta name="apiVersion" content="1.3" />
+        <meta name="debugMode" content="true" />
+        <meta name="strictMode" content="false" />
+
+        <!-- UWA Environment -->
+        <link rel="stylesheet" type="text/css" href="http://uwa.netvibes.com/lib/c/UWA/assets/css/standalone.css" />
+        <script type="text/javascript" src="http://uwa.netvibes.com/lib/c/UWA/js/UWA_Standalone_Alone.js"></script>
+		<script type="text/javascript" src="https://rawgithub.com/arulprasathr/netvibes/master/MathPlus.js"></script>
+		
+        <!-- Application Preferences -->
+        <widget:preferences>
+            <widget:preference name="decPoints" type="range" label="Decimal Precision" defaultValue="2" step="1" min="1" max="10" />
+        </widget:preferences>
+
+        <!-- Application Styles -->
+        <style type="text/css">
+			.SciCalc {
+			}
+			
+			.SciCalc div#main {
+				padding:10px;
+			}
+			
+			.SciCalc div.clear {
+				clear:both;
+				height:0px;
+			}
+			
+			.SciCalc div#keypad {
+				width: 100%;
+			}
+			.SciCalc div#keypad input[type = text] {
+				width: 200px;
+				height: 30px;
+			}
+			.SciCalc div button {
+				width: 40px;
+				height: 40px;
+				cursor: pointer;
+				cursor: hand;
+			}
+			
+			.SciCalc div#leftKeys {
+				float:left;
+			}
+			
+			.SciCalc div#rightKeys {
+				float:right;
+			}
+        </style>
+
+        <!-- Application Source -->
+        <script type="text/javascript">
+        //<![CDATA[
+
+            /*
+                We create the global MyWidget object (it could be any other name).
+                This object will be used to store variables and function.
+            */
+            var SciCalc = {
+				elements : {},
+
+                /*
+                    The onLoad() function is the first one, triggered by widget.onLoad.
+                    Its use is to display a "Loading" message, then call the next method.
+                */
+				createButton : function ( btn_id , sClass, symbol , clickHandler) {
+					var btn = UWA.createElement('button',{
+						class : sClass ,
+						id: btn_id,
+						events : {click : SciCalc.onBtnClick}
+						
+						});
+					btn.setHTML(symbol)
+					return btn;
+				},
+				onBtnClick : function (event){
+					var ipText = widget.body.getElements('#txt_Input')[0];
+					var memText = widget.body.getElements('#txt_Memory')[0];
+					var btn = UWA.Event.getElement(event);
+					var sClass = btn.getAttribute("class");
+					
+					var sIpVal = ipText.value;
+					var sMemVal = memText.value;
+					var arrIp;
+					var arrMem;
+					try{
+						arrIp = eval(sIpVal);
+						arrMem = eval(sMemVal);
+					}catch(e){}
+					var fVal = parseFloat(sIpVal);
+					if(sClass == 'key_btnNormal'){
+						var retVal = sIpVal + btn.getHTML();
+						ipText.value = retVal;
+					}else if(sClass == 'key_btnEnter'){
+						var retValue = '';
+						try{
+							retValue = eval(sIpVal);
+						}catch (ex){
+							retValue = 'ERROR! CHECK INPUT';
+						}
+						ipText.value = retVal;
+					} else if(sClass == 'key_btnNeg'){
+						var retVal = '-'+sIpVal;
+						ipText.value = retVal;
+					}else if(sClass == 'key_btnSqr'){
+						ipText.value = fVal*fVal;
+					}else if(sClass == 'key_btnCube'){
+						ipText.value = fVal*fVal*fVal;
+					}else if(sClass == 'key_btnInv'){
+						ipText.value = 1/fVal;
+					}else if(sClass == 'key_btnSqrt'){
+						ipText.value = Math.sqrt(fVal);
+					}else if(sClass == 'key_btnLn'){
+						ipText.value = Math.log(fVal);
+					}else if(sClass == 'key_btnLog'){
+						ipText.value = Math.log(fVal)/ Math.LN10;
+					}else if(sClass == 'key_btnExp'){
+						ipText.value = Math.exp(fVal);
+					}else if(sClass == 'key_btnCubeSqrt'){
+						ipText.value = Math.pow(fVal,1/3);
+					}else if(sClass == 'key_btnPI'){
+						ipText.value = sIpVal + Math.PI;
+					}else if(sClass == 'key_btnSin'){
+						ipText.value = Math.sin(fVal);
+					}else if(sClass == 'key_btnCos'){
+						ipText.value = Math.cos(fVal);
+					}else if(sClass == 'key_btnTan'){
+						ipText.value = Math.tan(fVal);
+					}else if(sClass == 'key_btnTan'){
+						ipText.value = 1/Math.tan(fVal);
+					}else if(sClass == 'key_btnClear'){
+						ipText.value = '';
+						memText.value = '';
+					}else if(sClass == 'key_btnVMod'){
+						var v = Vector.create(arrIp);
+						ipText.value = v.modulus();
+					}else if(sClass == 'key_btnVDot'){
+						var v = Vector.create(arrIp);
+						var u = Vector.create(arrMem);
+						var dotProd = v.dot(u);
+						var sDotProd;
+						if(dotProd){
+							sDotProd = ''+dotProd;
+						}else{
+							sDotProd = 'Invalid data or unsupported dimension';
+						}
+						ipText.value = sDotProd;
+						memText.value = sIpVal + ',' + sMemVal;
+					}else if(sClass == 'key_btnVCross'){
+						var v = Vector.create(arrIp);
+						var u = Vector.create(arrMem);
+						var crossProd = v.cross(u);
+						//console.log(crossProd);
+						var sCrossProd;
+						if(crossProd){
+							sCrossProd = crossProd.inspect();
+						}else{
+							sCrossProd = 'Invalid data or unsupported dimension';
+						}
+						ipText.value = sCrossProd;
+						memText.value = sIpVal + ',' + sMemVal;
+					}else if(sClass == 'key_btnMAdd'){
+						var a = Matrix.create(arrIp);
+						var b = Matrix.create(arrMem);
+						var aPlusb = a.add(b);
+						var saPlusb;
+						if(aPlusb){
+							saPlusb = aPlusb.inspect();
+						}else{
+							saPlusb = 'Invalid data or unsupported dimension';
+						}
+						ipText.value = saPlusb;
+						memText.value = sIpVal + ',' + sMemVal;
+					}else if(sClass == 'key_btnMInv'){
+						var a = Matrix.create(arrIp);
+						var aInv = a.inverse();
+						var sInv;
+						if(a && aInv){
+							sInv = aInv.inspect().replace(/\n/g,'');
+						}else{
+							sInv = 'Invalid data or unsupported dimension';
+						}
+						ipText.value = sInv;
+						memText.value = sIpVal;
+					}else if(sClass == 'key_btnMDet'){
+						var a = Matrix.create(arrIp);
+						var det = a.determinant();
+						var sDet;
+						if(det){
+							sDet = ''+det;
+						}else{
+							sDet = 'Invalid data or unsupported dimension';
+						}
+						ipText.value = sDet;
+						memText.value = sIpVal;
+					}else if(sClass == 'key_btnMTrans'){
+						var a = Matrix.create(arrIp);
+						var b = a.transpose();
+						//console.log(b.inspect());
+						var bTrans;
+						if(b){
+							bTrans = b.inspect().replace(/\n/g,'');
+						}else{
+							bTrans = 'Invalid data or unsupported dimension';
+						}
+						ipText.value = bTrans;
+						memText.value = sIpVal;
+					}else if(sClass == 'key_btnMMultS'){
+						var a = Matrix.create(arrMem);
+						var mult = a.multiply(fVal);
+						var sMult;
+						if(mult){
+							sMult = mult.inspect().replace(/\n/g,'');
+						}else{
+							sMult = 'Invalid data or unsupported dimension';
+						}
+						ipText.value = sMult;
+						memText.value = sIpVal;
+					}else if(sClass == 'key_btnMMultM'){
+						var a = Matrix.create(arrIp);
+						var b = Matrix.create(arrMem);
+						var mult = a.multiply(b);
+						var sMult;
+						if(mult){
+							sMult = mult.inspect().replace(/\n/g,'');
+						}else{
+							sMult = 'Invalid data or unsupported dimension';
+						}
+						ipText.value = sMult;
+						memText.value = sIpVal + ',' + sMemVal;
+					}else if(sClass == 'key_btnToMem'){
+						ipText.value = '';
+						memText.value = sIpVal;
+					}else if(sClass == 'key_btnFromMem'){
+						ipText.value = sMemVal;
+						memText.value = '';
+					}else if(sClass == 'key_btnDist'){
+						if(arrIp && arrMem && arrIp.length <= 3 && arrMem.length <= 3){
+							var dist;
+							if(arrIp.length == 2 && arrMem.length == 2){
+								dist = Math.sqrt(Math.pow((arrIp[0]-arrMem[0]),2) + Math.pow((arrIp[1]-arrMem[1]),2));
+							}else if(arrIp.length == 3 && arrMem.length == 3){
+								dist = Math.sqrt(Math.pow((arrIp[0]-arrMem[0]),2) + Math.pow((arrIp[1]-arrMem[1]),2) + + Math.pow((arrIp[2]-arrMem[2]),2));
+							} else {
+								dist = 'Invalid data or unsupported dimension';
+							}
+							//console.log(dist)
+							ipText.value = dist;
+							memText.value = sIpVal + ',' + sMemVal;
+						}else{
+							ipText.value = 'Invalid data or unsupported dimension';
+						}
+					}else if(sClass == 'key_btnSlope'){
+						if(arrIp && arrMem && arrIp.length <= 2 && arrMem.length <= 2){
+							var slope = (arrIp[1]-arrMem[1])/(arrIp[0]-arrMem[0]);
+							//console.log(slope);
+							ipText.value = slope;
+							memText.value = sIpVal + ',' + sMemVal;
+						}else{
+							ipText.value = 'Invalid data or unsupported dimension';
+						}
+					}else if(sClass == 'key_btnMid'){
+						if(arrIp && arrMem && arrIp.length <= 3 && arrMem.length <= 3){
+							var mid;
+							var sMid;
+							if(arrIp.length == 2 && arrMem.length == 2){
+								mid = [(arrIp[0]+arrMem[0])/2 , (arrIp[1]+arrMem[1])/2];
+								sMid = '['+mid[0]+','+mid[1]+']';
+							}else if(arrIp.length == 3 && arrMem.length == 3){
+								mid = [(arrIp[0]+arrMem[0])/2 , (arrIp[1]+arrMem[1])/2, (arrIp[2]+arrMem[2])/2];
+								sMid = '['+mid[0]+','+mid[1]+','+mid[2]+']';
+							} else {
+								sMid = 'Invalid data or unsupported dimension';
+							}
+							//console.log(sMid);
+							ipText.value = sMid;
+							memText.value = sIpVal + ',' + sMemVal;
+						}else{
+							ipText.value = 'Invalid data or unsupported dimension';
+						}
+					}
+					
+					//ipText.focus();
+					event.preventDefault();
+				},
+				addSpace : function ( ele ) {
+					var tDiv = UWA.createElement('div',{class: 'clear'});
+					ele.addContent(tDiv);
+				},
+				
+                onLoad: function() {
+
+                    widget.body.setContent('Loading...');
+					var ele = {},
+					start = UWA.createElement('div', 
+								{
+									class: 'SciCalc',
+									id: 'SciCalc',
+									html: {
+										tag: 'div',
+										id: 'main',
+										html : [
+											{tag : 'div',class : 'clear'},
+											{tag : 'div' , id : 'keypad', html : [{tag : 'div',id : 'leftKeys'},{tag : 'div',id : 'rightKeys'}]}									
+										]									
+									}										
+								});
+					ele.keypad = start.getElements('#keypad')[0];
+					ele.leftKeys = start.getElements('#leftKeys')[0];
+					ele.rightKeys = start.getElements('#rightKeys')[0];
+					
+					var txt_Input = UWA.createElement('input', {type: 'text', id: 'txt_Input'});
+					var key_btnToMem = SciCalc.createButton('key_btnToMem','key_btnToMem','&#8681;');
+					var txt_Memory = UWA.createElement('input', {type: 'text', id: 'txt_Memory'});
+					var key_btnFromMem = SciCalc.createButton('key_btnFromMem','key_btnFromMem','&#8679;');
+					
+					var key_btnNum1 = SciCalc.createButton('key_btnNum1','key_btnNormal','1');
+					var key_btnNum2 = SciCalc.createButton('key_btnNum2','key_btnNormal','2');
+					var key_btnNum3 = SciCalc.createButton('key_btnNum3','key_btnNormal','3');
+					var key_btnNum4 = SciCalc.createButton('key_btnNum1','key_btnNormal','4');
+					var key_btnNum5 = SciCalc.createButton('key_btnNum2','key_btnNormal','5');
+					var key_btnNum6 = SciCalc.createButton('key_btnNum3','key_btnNormal','6');
+					var key_btnNum7 = SciCalc.createButton('key_btnNum1','key_btnNormal','7');
+					var key_btnNum8 = SciCalc.createButton('key_btnNum2','key_btnNormal','8');
+					var key_btnNum9 = SciCalc.createButton('key_btnNum3','key_btnNormal','9');
+					var key_btnDot = SciCalc.createButton('key_btnNum1','key_btnNormal','.');
+					var key_btnNum0 = SciCalc.createButton('key_btnNum2','key_btnNormal','0');
+					var key_btnNeg = SciCalc.createButton('key_btnNum3','key_btnNeg','&plusmn;');
+					var key_btnOpenArr = SciCalc.createButton('key_btnOpenArr','key_btnNormal','[');
+					var key_btnCloseArr = SciCalc.createButton('key_btnCloseArr','key_btnNormal',']');
+					var key_btnComma = SciCalc.createButton('key_btnComma','key_btnNormal',',');
+					var key_btnOpenBrace = SciCalc.createButton('key_btnOpenBrace','key_btnNormal','(');
+					var key_btnCloseBrace = SciCalc.createButton('key_btnCloseBrace','key_btnNormal',')');
+					var key_btnClear = SciCalc.createButton('key_btnClear','key_btnClear','CE');
+					
+					var key_btnAdd = SciCalc.createButton('key_btnAdd','key_btnNormal','+');
+					var key_btnSub = SciCalc.createButton('key_btnSub','key_btnNormal','-');
+					var key_btnSqr = SciCalc.createButton('key_btnSqr','key_btnSqr','x&#178;');
+					var key_btnCube = SciCalc.createButton('key_btnCube','key_btnCube','x&#179;');
+					var key_btnSqrt = SciCalc.createButton('key_btnSqrt','key_btnSqrt','&#8730;');
+					var key_btnCubeSqrt = SciCalc.createButton('key_btnCubeSqrt','key_btnCubeSqrt','&#8731;');
+					var key_btnInv = SciCalc.createButton('key_btnInv','key_btnInv','x<sup>-1</sup>');
+					var key_btnPI = SciCalc.createButton('key_btnPI','key_btnPI','&#8719;');
+					var key_btnLn = SciCalc.createButton('key_btnLn','key_btnLn','Ln');
+					var key_btnLog = SciCalc.createButton('key_btnLog','key_btnLog','Log');
+					var key_btnExp = SciCalc.createButton('key_btnExp','key_btnExp','e<sup>x</sup>');
+					var key_btnSin = SciCalc.createButton('key_btnSin','key_btnSin','Sin&#952;');
+					var key_btnCos = SciCalc.createButton('key_btnCos','key_btnCos','Cos&#952;');
+					var key_btnTan = SciCalc.createButton('key_btnTan','key_btnTan','Tan&#952;');
+					var key_btnCot = SciCalc.createButton('key_btnCot','key_btnCot','Cot&#952;');
+					var key_btnDist = SciCalc.createButton('key_btnDist','key_btnDist','Dist');
+					var key_btnMid = SciCalc.createButton('key_btnMid','key_btnMid','Mid');
+					var key_btnSlope = SciCalc.createButton('key_btnSlope','key_btnSlope','Slope');
+					var key_btnVMod = SciCalc.createButton('key_btnVMod','key_btnVMod','|v&#772;|');
+					var key_btnVDot = SciCalc.createButton('key_btnVDot','key_btnVDot','v&#772;.u&#772;');
+					var key_btnVCross = SciCalc.createButton('key_btnVCross','key_btnVCross','v&#772;&times;u&#772;');
+					//var key_btnVMod = SciCalc.createButton('key_btnVMod','key_btnVMod','|v&#8407;|');
+					//var key_btnVDot = SciCalc.createButton('key_btnVDot','key_btnVDot','v&#8407;.u&#8407;');
+					//var key_btnVCross = SciCalc.createButton('key_btnVCross','key_btnVCross','v&#8407;&times;u&#8407;');
+					var key_btnMAdd = SciCalc.createButton('key_btnMAdd','key_btnMAdd','a<sub>ij</sub>+b<sub>ij</sub>');
+					var key_btnMDet = SciCalc.createButton('key_btnMDet','key_btnMDet','|a<sub>ij</sub>|');
+					var key_btnMTrans = SciCalc.createButton('key_btnMTrans','key_btnMTrans','a<sub>ij</sub><sup>T</sup>');
+					var key_btnMInv = SciCalc.createButton('key_btnMInv','key_btnMInv','a<sub>ij</sub><sup>-1</sup>');
+					var key_btnMMultS = SciCalc.createButton('key_btnMMultS','key_btnMMultS','C.a<sub>ij</sub>');
+					var key_btnMMultM = SciCalc.createButton('key_btnMMultM','key_btnMMultM','a<sub>ij</sub>&times;b<sub>ij</sub>');
+
+
+					//var key_btnMult = SciCalc.createButton('key_btnMult','key_btnNormal','&times;');
+					//var key_btnDiv = SciCalc.createButton('key_btnDiv','key_btnNormal','&divide;');
+					var key_btnMult = SciCalc.createButton('key_btnMult','key_btnNormal','*');
+					var key_btnDiv = SciCalc.createButton('key_btnDiv','key_btnNormal','/');
+					
+					var key_btnEnter = SciCalc.createButton('key_btnEnter','key_btnEnter','=');
+
+			
+					ele.leftKeys.addContent(txt_Input);
+					SciCalc.addSpace(ele.leftKeys);
+					ele.leftKeys.addContent(txt_Memory);					
+					
+					ele.rightKeys.addContent(key_btnToMem);
+					ele.rightKeys.addContent(key_btnSqr);
+					ele.rightKeys.addContent(key_btnCube);
+					ele.rightKeys.addContent(key_btnSqrt);
+					SciCalc.addSpace(ele.rightKeys);
+					ele.rightKeys.addContent(key_btnFromMem);
+					ele.rightKeys.addContent(key_btnInv);
+					ele.rightKeys.addContent(key_btnPI);
+					ele.rightKeys.addContent(key_btnCubeSqrt);
+					
+					//row-1
+					SciCalc.addSpace(ele.leftKeys);
+					ele.leftKeys.addContent(key_btnNum1);
+					ele.leftKeys.addContent(key_btnNum2);
+					ele.leftKeys.addContent(key_btnNum3);
+					
+					SciCalc.addSpace(ele.rightKeys);
+					ele.rightKeys.addContent(key_btnAdd);
+					ele.rightKeys.addContent(key_btnSub);
+					ele.rightKeys.addContent(key_btnMult);
+					ele.rightKeys.addContent(key_btnDiv);
+					
+					//row-2
+					SciCalc.addSpace(ele.leftKeys);
+					ele.leftKeys.addContent(key_btnNum4);
+					ele.leftKeys.addContent(key_btnNum5);
+					ele.leftKeys.addContent(key_btnNum6);
+					SciCalc.addSpace(ele.rightKeys);
+					ele.rightKeys.addContent(key_btnSin);
+					ele.rightKeys.addContent(key_btnLn);
+					ele.rightKeys.addContent(key_btnLog);
+					ele.rightKeys.addContent(key_btnExp);
+					SciCalc.addSpace(ele.rightKeys);
+					ele.rightKeys.addContent(key_btnCos);
+					ele.rightKeys.addContent(key_btnDist);
+					ele.rightKeys.addContent(key_btnMid);
+					ele.rightKeys.addContent(key_btnSlope);
+					
+					//row-3
+					SciCalc.addSpace(ele.leftKeys);
+					ele.leftKeys.addContent(key_btnNum7);
+					ele.leftKeys.addContent(key_btnNum8);
+					ele.leftKeys.addContent(key_btnNum9);
+					
+					//row-4
+					SciCalc.addSpace(ele.leftKeys);
+					ele.leftKeys.addContent(key_btnDot);
+					ele.leftKeys.addContent(key_btnNum0);
+					ele.leftKeys.addContent(key_btnNeg);
+
+					//row-4
+					SciCalc.addSpace(ele.leftKeys);
+					ele.leftKeys.addContent(key_btnOpenArr);
+					ele.leftKeys.addContent(key_btnCloseArr);
+					ele.leftKeys.addContent(key_btnComma);
+					SciCalc.addSpace(ele.rightKeys);
+					ele.rightKeys.addContent(key_btnTan);
+					ele.rightKeys.addContent(key_btnVMod);
+					ele.rightKeys.addContent(key_btnVDot);
+					ele.rightKeys.addContent(key_btnVCross);
+
+					SciCalc.addSpace(ele.rightKeys);
+					ele.rightKeys.addContent(key_btnCot);
+					ele.rightKeys.addContent(key_btnMAdd);
+					ele.rightKeys.addContent(key_btnMDet);
+					ele.rightKeys.addContent(key_btnMTrans);
+					SciCalc.addSpace(ele.rightKeys);
+					ele.rightKeys.addContent(key_btnMInv);
+					ele.rightKeys.addContent(key_btnMMultS);
+					ele.rightKeys.addContent(key_btnMMultM);
+					ele.rightKeys.addContent(key_btnEnter);
+					
+					//row-5
+					SciCalc.addSpace(ele.leftKeys);
+					ele.leftKeys.addContent(key_btnOpenBrace);
+					ele.leftKeys.addContent(key_btnCloseBrace);
+					ele.leftKeys.addContent(key_btnClear);
+					
+					start.inject(widget.body.empty());
+                }
+            };
+
+            /*
+                The "onLoad" event is the very first event triggered when
+                the widget is fully loaded or when the preferences are validated.
+
+                Here, we add MyWidget.onLoad() function as "onLoad" event
+                listener on the widget.
+            */
+            widget.addEvent('onLoad', SciCalc.onLoad);
+
+        //]]>
+        </script>
+    </head>
+    <body>
+        <p>Loading ...</p>
+    </body>
+</html>
