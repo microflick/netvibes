@@ -216,12 +216,8 @@
 						ipText.value = bTrans;
 						memText.value = sIpVal;
 					}else if(sClass == 'key_btnMMultS'){
-						ipText.value = '';
-						memText.value = sIpVal + ',' + sMemVal;
-					}else if(sClass == 'key_btnMMultM'){
-						var a = Matrix.create(arrIp);
-						var b = a.transpose();
-						var mult = a.multiply(b);
+						var a = Matrix.create(arrMem);
+						var mult = a.multiply(fVal);
 						var sMult;
 						if(mult){
 							sMult = mult.inspect().replace(/\n/g,'');
@@ -230,6 +226,18 @@
 						}
 						ipText.value = sMult;
 						memText.value = sIpVal;
+					}else if(sClass == 'key_btnMMultM'){
+						var a = Matrix.create(arrIp);
+						var b = Matrix.create(arrMem);
+						var mult = a.multiply(b);
+						var sMult;
+						if(mult){
+							sMult = mult.inspect().replace(/\n/g,'');
+						}else{
+							sMult = 'Invalid data or unsupported dimension';
+						}
+						ipText.value = sMult;
+						memText.value = sIpVal + ',' + sMemVal;
 					}else if(sClass == 'key_btnToMem'){
 						ipText.value = '';
 						memText.value = sIpVal;
@@ -364,7 +372,7 @@
 					var key_btnMTrans = SciCalc.createButton('key_btnMTrans','key_btnMTrans','a<sub>ij</sub><sup>T</sup>');
 					var key_btnMInv = SciCalc.createButton('key_btnMInv','key_btnMInv','a<sub>ij</sub><sup>-1</sup>');
 					var key_btnMMultS = SciCalc.createButton('key_btnMMultS','key_btnMMultS','C.a<sub>ij</sub>');
-					var key_btnMMultM = SciCalc.createButton('key_btnMMultM','key_btnMMultM','a<sub>ij</sub>&times;a<sub>ij</sub><sup>T</sup>');
+					var key_btnMMultM = SciCalc.createButton('key_btnMMultM','key_btnMMultM','a<sub>ij</sub>&times;b<sub>ij</sub>');
 
 
 					//var key_btnMult = SciCalc.createButton('key_btnMult','key_btnNormal','&times;');
