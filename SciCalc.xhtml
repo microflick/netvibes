@@ -43,18 +43,16 @@
 				height: 30px;
 			}
 			.SciCalc div button {
-				width: 35px;
-				height: 35px;
+				width: 40px;
+				height: 40px;
 				cursor: pointer;
 				cursor: hand;
 			}
-			
-			.SciCalc div#leftKeys {
-				float:left;
+			.SciCalc div button.key_btnEnter {
+				width : 280px;
 			}
 			
-			.SciCalc div#rightKeys {
-				float:right;
+			.SciCalc div#keys {
 			}
         </style>
 
@@ -311,14 +309,13 @@
 										id: 'main',
 										html : [
 											{tag : 'div',class : 'clear'},
-											{tag : 'div' , id : 'keypad', html : [{tag : 'div',id : 'txtInputs'},{tag : 'div',id : 'leftKeys'},{tag : 'div',id : 'rightKeys'}]}									
+											{tag : 'div' , id : 'keypad', html : [{tag : 'div',id : 'txtInputs'},{tag : 'div',id : 'keys'}]}									
 										]									
 									}										
 								});
 					ele.keypad = start.getElements('#keypad')[0];
 					ele.txtInputs = start.getElements('#txtInputs')[0];
-					ele.leftKeys = start.getElements('#leftKeys')[0];
-					ele.rightKeys = start.getElements('#rightKeys')[0];
+					ele.keys = start.getElements('#keys')[0];
 					
 					var txt_Input = UWA.createElement('input', {type: 'text', id: 'txt_Input'});
 					var key_btnToMem = SciCalc.createButton('key_btnToMem','key_btnToMem','&#8681;');
@@ -386,85 +383,80 @@
 			
 					ele.txtInputs.addContent(txt_Input);
 					SciCalc.addSpace(ele.txtInputs);
-					ele.txtInputs.addContent(txt_Memory);					
-					
-					ele.rightKeys.addContent(key_btnToMem);
-					ele.rightKeys.addContent(key_btnSqr);
-					ele.rightKeys.addContent(key_btnCube);
-					ele.rightKeys.addContent(key_btnSqrt);
-					SciCalc.addSpace(ele.rightKeys);
-					ele.rightKeys.addContent(key_btnFromMem);
-					ele.rightKeys.addContent(key_btnInv);
-					ele.rightKeys.addContent(key_btnPI);
-					ele.rightKeys.addContent(key_btnCubeSqrt);
+					ele.txtInputs.addContent(txt_Memory);
 					
 					//row-1
-					SciCalc.addSpace(ele.leftKeys);
-					ele.leftKeys.addContent(key_btnNum1);
-					ele.leftKeys.addContent(key_btnNum2);
-					ele.leftKeys.addContent(key_btnNum3);
-					
-					SciCalc.addSpace(ele.rightKeys);
-					ele.rightKeys.addContent(key_btnAdd);
-					ele.rightKeys.addContent(key_btnSub);
-					ele.rightKeys.addContent(key_btnMult);
-					ele.rightKeys.addContent(key_btnDiv);
+					ele.keys.addContent(key_btnNum1);
+					ele.keys.addContent(key_btnNum2);
+					ele.keys.addContent(key_btnNum3);					
+					ele.keys.addContent(key_btnToMem);
+					ele.keys.addContent(key_btnSqr);
+					ele.keys.addContent(key_btnCube);
+					ele.keys.addContent(key_btnSqrt);
 					
 					//row-2
-					SciCalc.addSpace(ele.leftKeys);
-					ele.leftKeys.addContent(key_btnNum4);
-					ele.leftKeys.addContent(key_btnNum5);
-					ele.leftKeys.addContent(key_btnNum6);
-					SciCalc.addSpace(ele.rightKeys);
-					ele.rightKeys.addContent(key_btnSin);
-					ele.rightKeys.addContent(key_btnLn);
-					ele.rightKeys.addContent(key_btnLog);
-					ele.rightKeys.addContent(key_btnExp);
-					SciCalc.addSpace(ele.rightKeys);
-					ele.rightKeys.addContent(key_btnCos);
-					ele.rightKeys.addContent(key_btnDist);
-					ele.rightKeys.addContent(key_btnMid);
-					ele.rightKeys.addContent(key_btnSlope);
+					SciCalc.addSpace(ele.keys);
+					ele.keys.addContent(key_btnNum4);
+					ele.keys.addContent(key_btnNum5);
+					ele.keys.addContent(key_btnNum6);
+					ele.keys.addContent(key_btnFromMem);
+					ele.keys.addContent(key_btnInv);
+					ele.keys.addContent(key_btnPI);
+					ele.keys.addContent(key_btnCubeSqrt);
 					
 					//row-3
-					SciCalc.addSpace(ele.leftKeys);
-					ele.leftKeys.addContent(key_btnNum7);
-					ele.leftKeys.addContent(key_btnNum8);
-					ele.leftKeys.addContent(key_btnNum9);
+					SciCalc.addSpace(ele.keys);
+					ele.keys.addContent(key_btnNum7);
+					ele.keys.addContent(key_btnNum8);
+					ele.keys.addContent(key_btnNum9);
+					ele.keys.addContent(key_btnAdd);
+					ele.keys.addContent(key_btnSub);
+					ele.keys.addContent(key_btnMult);
+					ele.keys.addContent(key_btnDiv);
 					
 					//row-4
-					SciCalc.addSpace(ele.leftKeys);
-					ele.leftKeys.addContent(key_btnDot);
-					ele.leftKeys.addContent(key_btnNum0);
-					ele.leftKeys.addContent(key_btnNeg);
+					SciCalc.addSpace(ele.keys);
+					ele.keys.addContent(key_btnDot);
+					ele.keys.addContent(key_btnNum0);
+					ele.keys.addContent(key_btnNeg);
+					ele.keys.addContent(key_btnSin);
+					ele.keys.addContent(key_btnLn);
+					ele.keys.addContent(key_btnLog);
+					ele.keys.addContent(key_btnExp);
 
-					//row-4
-					SciCalc.addSpace(ele.leftKeys);
-					ele.leftKeys.addContent(key_btnOpenArr);
-					ele.leftKeys.addContent(key_btnCloseArr);
-					ele.leftKeys.addContent(key_btnComma);
-					SciCalc.addSpace(ele.rightKeys);
-					ele.rightKeys.addContent(key_btnTan);
-					ele.rightKeys.addContent(key_btnVMod);
-					ele.rightKeys.addContent(key_btnVDot);
-					ele.rightKeys.addContent(key_btnVCross);
-
-					SciCalc.addSpace(ele.rightKeys);
-					ele.rightKeys.addContent(key_btnCot);
-					ele.rightKeys.addContent(key_btnMAdd);
-					ele.rightKeys.addContent(key_btnMDet);
-					ele.rightKeys.addContent(key_btnMTrans);
-					SciCalc.addSpace(ele.rightKeys);
-					ele.rightKeys.addContent(key_btnMInv);
-					ele.rightKeys.addContent(key_btnMMultS);
-					ele.rightKeys.addContent(key_btnMMultM);
-					ele.rightKeys.addContent(key_btnEnter);
-					
 					//row-5
-					SciCalc.addSpace(ele.leftKeys);
-					ele.leftKeys.addContent(key_btnOpenBrace);
-					ele.leftKeys.addContent(key_btnCloseBrace);
-					ele.leftKeys.addContent(key_btnClear);
+					SciCalc.addSpace(ele.keys);
+					ele.keys.addContent(key_btnOpenArr);
+					ele.keys.addContent(key_btnCloseArr);
+					ele.keys.addContent(key_btnComma);
+					ele.keys.addContent(key_btnCos);
+					ele.keys.addContent(key_btnDist);
+					ele.keys.addContent(key_btnMid);
+					ele.keys.addContent(key_btnSlope);
+
+					//row-6
+					SciCalc.addSpace(ele.keys);
+					ele.keys.addContent(key_btnOpenBrace);
+					ele.keys.addContent(key_btnCloseBrace);
+					ele.keys.addContent(key_btnClear);
+					ele.keys.addContent(key_btnTan);
+					ele.keys.addContent(key_btnVMod);
+					ele.keys.addContent(key_btnVDot);
+					ele.keys.addContent(key_btnVCross);
+
+					//row-7
+					SciCalc.addSpace(ele.keys);
+					ele.keys.addContent(key_btnCot);
+					ele.keys.addContent(key_btnMAdd);
+					ele.keys.addContent(key_btnMDet);
+					ele.keys.addContent(key_btnMTrans);
+					ele.keys.addContent(key_btnMInv);
+					ele.keys.addContent(key_btnMMultS);
+					ele.keys.addContent(key_btnMMultM);
+
+					//row-8
+					SciCalc.addSpace(ele.keys);
+					ele.keys.addContent(key_btnEnter);
 					
 					start.inject(widget.body.empty());
                 }
