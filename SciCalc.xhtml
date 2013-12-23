@@ -8,7 +8,7 @@
         <meta name="author" content="Arul Rajendiran" />
         <meta name="version" content="1.0" />
         <meta name="apiVersion" content="1.3" />
-        <meta name="debugMode" content="false" />
+        <meta name="debugMode" content="true" />
         <meta name="strictMode" content="false" />
 
         <!-- UWA Environment -->
@@ -102,11 +102,11 @@
 						var retVal = sIpVal + btn.getHTML();
 						ipText.value = retVal;
 					}else if(sClass == 'key_btnEnter'){
-						var retValue = '';
+						var retVal = '';
 						try{
-							retValue = eval(sIpVal);
+							retVal = eval(sIpVal);
 						}catch (ex){
-							retValue = 'ERROR! CHECK INPUT';
+							retVal = 'ERROR! CHECK INPUT';
 						}
 						ipText.value = retVal;
 					} else if(sClass == 'key_btnNeg'){
