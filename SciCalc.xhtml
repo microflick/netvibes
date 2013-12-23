@@ -39,7 +39,7 @@
 				width: 100%;
 			}
 			.SciCalc div#keypad input[type = text] {
-				width: 200px;
+				width: 100%;
 				height: 30px;
 			}
 			.SciCalc div button {
@@ -311,11 +311,12 @@
 										id: 'main',
 										html : [
 											{tag : 'div',class : 'clear'},
-											{tag : 'div' , id : 'keypad', html : [{tag : 'div',id : 'leftKeys'},{tag : 'div',id : 'rightKeys'}]}									
+											{tag : 'div' , id : 'keypad', html : [{tag : 'div',id : 'txtInputs'},{tag : 'div',id : 'leftKeys'},{tag : 'div',id : 'rightKeys'}]}									
 										]									
 									}										
 								});
 					ele.keypad = start.getElements('#keypad')[0];
+					ele.txtInputs = start.getElements('#txtInputs')[0];
 					ele.leftKeys = start.getElements('#leftKeys')[0];
 					ele.rightKeys = start.getElements('#rightKeys')[0];
 					
@@ -383,9 +384,9 @@
 					var key_btnEnter = SciCalc.createButton('key_btnEnter','key_btnEnter','=');
 
 			
-					ele.leftKeys.addContent(txt_Input);
-					SciCalc.addSpace(ele.leftKeys);
-					ele.leftKeys.addContent(txt_Memory);					
+					ele.txtInputs.addContent(txt_Input);
+					SciCalc.addSpace(ele.txtInputs);
+					ele.txtInputs.addContent(txt_Memory);					
 					
 					ele.rightKeys.addContent(key_btnToMem);
 					ele.rightKeys.addContent(key_btnSqr);
