@@ -244,6 +244,34 @@
 					}else if(sClass == 'key_btnFromMem'){
 						ipText.value = sMemVal;
 						memText.value = '';
+					}else if(sClass == 'key_btnSlope'){
+						if(arrIp && arrMem && arrIp.length <= 2 && arrMem.length <= 2){
+							var slope = (arrIp[1]-arrMem[1])/(arrIp[0]-arrMem[0]);
+							//console.log(slope);
+							ipText.value = slope;
+							memText.value = sIpVal + ',' + sMemVal;
+						}else{
+							ipText.value = 'Invalid data or unsupported dimension';
+						}
+					}else if(sClass == 'key_btnMid'){
+						if(arrIp && arrMem && arrIp.length <= 3 && arrMem.length <= 3){
+							var mid;
+							var sMid;
+							if(arrIp.length == 2 && arrMem.length == 2){
+								mid = [(arrIp[0]+arrMem[0])/2 , (arrIp[1]+arrMem[1])/2];
+								sMid = '['+mid[0]+','+mid[1]+']';
+							}else if(arrIp.length == 3 && arrMem.length == 3){
+								mid = [(arrIp[0]+arrMem[0])/2 , (arrIp[1]+arrMem[1])/2, (arrIp[2]+arrMem[2])/2];
+								sMid = '['+mid[0]+','+mid[1]+','+mid[2]+']';
+							} else {
+								sMid = 'Invalid data or unsupported dimension';
+							}
+							//console.log(sMid);
+							ipText.value = sMid;
+							memText.value = sIpVal + ',' + sMemVal;
+						}else{
+							ipText.value = 'Invalid data or unsupported dimension';
+						}
 					}
 					
 					//ipText.focus();
