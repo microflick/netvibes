@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:widget="http://www.netvibes.com/ns/">
+    <head>
+        <!-- Application Metas -->
+        <title>Dashboard</title>
+        <meta name="author" content="Arul Rajendiran" />
+		<meta name="version" content="1.0" />
+        <meta name="description" content="Display Hello World for UWA" />
+        <meta name="apiVersion" content="1.3" />
+        <meta name="debugMode" content="false" />
+        <meta name="strictMode" content="false" />
+
+        <!-- UWA Environment -->
+        <link rel="stylesheet" type="text/css" href="http://uwa.netvibes.com/lib/c/UWA/assets/css/standalone.css" />
+        <script type="text/javascript" src="http://uwa.netvibes.com/lib/c/UWA/js/UWA_Embedded.js"></script>
+
+        <!-- Application Preferences -->
+        <widget:preferences>
+        </widget:preferences>
+
+        <!-- Application Styles -->
+        <style type="text/css">
+        </style>
+    </head>
+    <body>
+        <!-- UWA Embedded initialisation -->
+		<div class="myWidget">
+    <script type="text/javascript">
+var UWA = {hosts:{"uwa":"http://uwa.netvibes.com","exposition":"http://uwa.netvibes.com"}};
+        var UWA_ASYNC = UWA_ASYNC || [];
+            UWA_ASYNC.push(
+				{
+					url: "https://raw.github.com/arulprasathr/netvibes/master/SciCalc.xhtml",
+					options:
+					{
+						"title":"Test",
+						"color":"red",
+						"buildHeader":true,
+						"displayHeader":false
+					}
+				}
+			);
+
+        (function () {
+            var a = document.getElementsByTagName("script"),
+                b = a[a.length - 1], c = b.parentNode,
+                d = document.createElement("script"),
+                e = document.createElement("div");
+            e.id = "UWA_ASYNC"; d.type = "text/javascript"; d.async = true;
+            d.src = UWA.hosts.uwa + "/lib/c/UWA/js/UWA_Embedded.js";
+            c.insertBefore(d, b); c.insertBefore(e, b)
+        })();
+    </script>
+</div>
+    </body>
+</html>
