@@ -23,7 +23,15 @@
 
         <!-- Application Styles -->
         <style type="text/css">
-			.SciCalc {
+			@font-face {
+			  font-family: '3dsweb';
+			  src: url('http://www.3ds.com/fileadmin/templates/fonts/DS_FY_Regular.eot');
+			  src: url('http://www.3ds.com/fileadmin/templates/fonts/DS_FY_Regular.eot?#iefix') format('embedded-opentype'), url('http://www.3ds.com/fileadmin/templates/fonts/DS_FY_Regular.woff') format('woff'), url('http://www.3ds.com/fileadmin/templates/fonts/DS_FY_Regular.ttf') format('truetype'), url('http://www.3ds.com/fileadmin/templates/fonts/DS_FY_Regular.svg#3dsregular') format('svg');
+			  font-weight: normal;
+			  font-style: normal;
+			}
+			.SciCalc *{
+				/*font-family: '3dsweb', Helvetica, Arial, sans-serif;*/
 			}
 			
 			.SciCalc div#main {
@@ -45,13 +53,31 @@
 			.SciCalc div button {
 				width: 40px;
 				height: 40px;
+				font-size : 1.2em;
 				cursor: pointer;
 				cursor: hand;
+				color : #fff;
+				background-color : #205b7a;
+			}
+			.SciCalc div button:hover {
+				color : #fff;
+				background-color : #205b7a;
 			}
 			.SciCalc div button.key_btnEnter {
-				width : 280px;
+				/*width : 280px;*/
+				color : #fff;
+				background-color : #142f44;
+			}
+			.SciCalc div button.key_btnNormal {
+				/*width : 280px;*/
+				color : #000;
+				background-color : #a2bbcf;
 			}
 			
+			.SciCalc div button.key_btnClear {
+				color : #fff;
+				background-color : #c90000;
+			}
 			.SciCalc div#keys {
 			}
         </style>
@@ -66,11 +92,26 @@
             */
             var SciCalc = {
 				elements : {},
+				factorials : {},
 
                 /*
                     The onLoad() function is the first one, triggered by widget.onLoad.
                     Its use is to display a "Loading" message, then call the next method.
                 */
+				isInt : function (value) {
+					return !isNaN(value) && parseInt(value) == value;
+				},
+				factorial : function (n) {
+					if(SciCalc.factorials[n]){ // memoized
+						return SciCalc.factorials[n];
+					}
+					var total=1;
+					for(var i=n; i>0; i--){
+						total*=i;
+					}
+					SciCalc.factorials[n] = total; // save
+					return total;
+				},
 				createButton : function ( btn_id , sClass, symbol , clickHandler) {
 					var btn = UWA.createElement('button',{
 						class : sClass ,
@@ -96,6 +137,8 @@
 						arrMem = eval(sMemVal);
 					}catch(e){}
 					var fVal = parseFloat(sIpVal);
+					var iIpVal = parseFloat(sIpVal);
+					var iMemVal = parseFloat(sMemVal);
 					if(sClass == 'key_btnNormal'){
 						var retVal = sIpVal + btn.getHTML();
 						ipText.value = retVal;
@@ -129,13 +172,19 @@
 					}else if(sClass == 'key_btnPI'){
 						ipText.value = sIpVal + Math.PI;
 					}else if(sClass == 'key_btnSin'){
-						ipText.value = Math.sin(fVal);
+						ipText.value = Math.sin(fVal/180 * Math.PI);
 					}else if(sClass == 'key_btnCos'){
-						ipText.value = Math.cos(fVal);
+						ipText.value = Math.cos(fVal/180 * Math.PI);
 					}else if(sClass == 'key_btnTan'){
-						ipText.value = Math.tan(fVal);
+						ipText.value = Math.tan(fVal/180 * Math.PI);;
+					}else if(sClass == 'key_btnaSin'){
+						ipText.value = Math.asin(fVal)*180 / Math.PI;
+					}else if(sClass == 'key_btnaCos'){
+						ipText.value = Math.acos(fVal)*180 / Math.PI;
+					}else if(sClass == 'key_btnaTan'){
+						ipText.value = Math.atan(fVal)*180 / Math.PI;
 					}else if(sClass == 'key_btnTan'){
-						ipText.value = 1/Math.tan(fVal);
+						ipText.value = 1/Math.tan(fVal/180 * Math.PI);
 					}else if(sClass == 'key_btnClear'){
 						ipText.value = '';
 						memText.value = '';
@@ -239,6 +288,15 @@
 					}else if(sClass == 'key_btnToMem'){
 						ipText.value = '';
 						memText.value = sIpVal;
+					}else if(sClass == 'key_btnFact'){
+						ipText.value = SciCalc.factorial(iIpVal);
+						memText.value = sIpVal;
+					}else if(sClass == 'key_btnNPR'){
+						ipText.value = Math.round(SciCalc.factorial(iMemVal)/SciCalc.factorial(iMemVal-iIpVal));
+						memText.value = iMemVal + ' P ' + sIpVal;
+					}else if(sClass == 'key_btnNCR'){
+						ipText.value = Math.round((SciCalc.factorial(iMemVal)/SciCalc.factorial(iMemVal-iIpVal)/SciCalc.factorial(iIpVal)));
+						memText.value = iMemVal + ' C ' + sIpVal;
 					}else if(sClass == 'key_btnFromMem'){
 						ipText.value = sMemVal;
 						memText.value = '';
@@ -287,9 +345,8 @@
 							ipText.value = 'Invalid data or unsupported dimension';
 						}
 					}
-					
 					//ipText.focus();
-					event.preventDefault();
+					//event.preventDefault();
 				},
 				addSpace : function ( ele ) {
 					var tDiv = UWA.createElement('div',{class: 'clear'});
@@ -341,20 +398,26 @@
 					var key_btnCloseBrace = SciCalc.createButton('key_btnCloseBrace','key_btnNormal',')');
 					var key_btnClear = SciCalc.createButton('key_btnClear','key_btnClear','CE');
 					
-					var key_btnAdd = SciCalc.createButton('key_btnAdd','key_btnNormal','+');
-					var key_btnSub = SciCalc.createButton('key_btnSub','key_btnNormal','-');
+					var key_btnAdd = SciCalc.createButton('key_btnAdd','key_btnAdd','+');
+					var key_btnSub = SciCalc.createButton('key_btnSub','key_btnSub','-');
 					var key_btnSqr = SciCalc.createButton('key_btnSqr','key_btnSqr','x&#178;');
 					var key_btnCube = SciCalc.createButton('key_btnCube','key_btnCube','x&#179;');
 					var key_btnSqrt = SciCalc.createButton('key_btnSqrt','key_btnSqrt','&#8730;');
 					var key_btnCubeSqrt = SciCalc.createButton('key_btnCubeSqrt','key_btnCubeSqrt','&#8731;');
 					var key_btnInv = SciCalc.createButton('key_btnInv','key_btnInv','x<sup>-1</sup>');
-					var key_btnPI = SciCalc.createButton('key_btnPI','key_btnPI','&#8719;');
+					var key_btnPI = SciCalc.createButton('key_btnPI','key_btnPI','&pi;');
 					var key_btnLn = SciCalc.createButton('key_btnLn','key_btnLn','Ln');
 					var key_btnLog = SciCalc.createButton('key_btnLog','key_btnLog','Log');
 					var key_btnExp = SciCalc.createButton('key_btnExp','key_btnExp','e<sup>x</sup>');
+					var key_btnFact = SciCalc.createButton('key_btnFact','key_btnFact','n!');
+					var key_btnNCR = SciCalc.createButton('key_btnNCR','key_btnNCR','<sub>n</sub>C<sub>r</sub>');
+					var key_btnNPR = SciCalc.createButton('key_btnNPR','key_btnNPR','<sub>n</sub>P<sub>r</sub>');
 					var key_btnSin = SciCalc.createButton('key_btnSin','key_btnSin','Sin&#952;');
 					var key_btnCos = SciCalc.createButton('key_btnCos','key_btnCos','Cos&#952;');
 					var key_btnTan = SciCalc.createButton('key_btnTan','key_btnTan','Tan&#952;');
+					var key_btnaSin = SciCalc.createButton('key_btnaSin','key_btnaSin','aSin');
+					var key_btnaCos = SciCalc.createButton('key_btnaCos','key_btnaCos','aCos');
+					var key_btnaTan = SciCalc.createButton('key_btnaTan','key_btnaTan','aTan');
 					var key_btnCot = SciCalc.createButton('key_btnCot','key_btnCot','Cot&#952;');
 					var key_btnDist = SciCalc.createButton('key_btnDist','key_btnDist','Dist');
 					var key_btnMid = SciCalc.createButton('key_btnMid','key_btnMid','Mid');
@@ -375,8 +438,8 @@
 
 					//var key_btnMult = SciCalc.createButton('key_btnMult','key_btnNormal','&times;');
 					//var key_btnDiv = SciCalc.createButton('key_btnDiv','key_btnNormal','&divide;');
-					var key_btnMult = SciCalc.createButton('key_btnMult','key_btnNormal','*');
-					var key_btnDiv = SciCalc.createButton('key_btnDiv','key_btnNormal','/');
+					var key_btnMult = SciCalc.createButton('key_btnMult','key_btnMult','*');
+					var key_btnDiv = SciCalc.createButton('key_btnDiv','key_btnDiv','/');
 					
 					var key_btnEnter = SciCalc.createButton('key_btnEnter','key_btnEnter','=');
 
@@ -454,8 +517,17 @@
 					ele.keys.addContent(key_btnMMultS);
 					ele.keys.addContent(key_btnMMultM);
 
-					//row-8
+					//row-7
 					SciCalc.addSpace(ele.keys);
+					ele.keys.addContent(key_btnFact);
+					ele.keys.addContent(key_btnNCR);
+					ele.keys.addContent(key_btnNPR);
+					ele.keys.addContent(key_btnaSin);
+					ele.keys.addContent(key_btnaCos);
+					ele.keys.addContent(key_btnaTan);
+
+					//row-8
+					//SciCalc.addSpace(ele.keys);
 					ele.keys.addContent(key_btnEnter);
 					
 					start.inject(widget.body.empty());
