@@ -123,8 +123,8 @@
 					return btn;
 				},
 				onBtnClick : function (event){
-					var ipText = widget.body.getElements('#txt_Input')[0];
-					var memText = widget.body.getElements('#txt_Memory')[0];
+					var ipText = widget.getElement('#txt_Input');
+					var memText = widget.getElement('#txt_Memory');
 					var btn = UWA.Event.getElement(event);
 					var sClass = btn.getAttribute("class");
 					
@@ -150,6 +150,7 @@
 							retVal = 'ERROR! CHECK INPUT';
 						}
 						ipText.value = retVal;
+						memText.value = sIpVal;
 					} else if(sClass == 'key_btnNeg'){
 						var retVal = '-'+sIpVal;
 						ipText.value = retVal;
@@ -398,8 +399,8 @@
 					var key_btnCloseBrace = SciCalc.createButton('key_btnCloseBrace','key_btnNormal',')');
 					var key_btnClear = SciCalc.createButton('key_btnClear','key_btnClear','CE');
 					
-					var key_btnAdd = SciCalc.createButton('key_btnAdd','key_btnAdd','+');
-					var key_btnSub = SciCalc.createButton('key_btnSub','key_btnSub','-');
+					var key_btnAdd = SciCalc.createButton('key_btnAdd','key_btnNormal','+');
+					var key_btnSub = SciCalc.createButton('key_btnSub','key_btnNormal','-');
 					var key_btnSqr = SciCalc.createButton('key_btnSqr','key_btnSqr','x&#178;');
 					var key_btnCube = SciCalc.createButton('key_btnCube','key_btnCube','x&#179;');
 					var key_btnSqrt = SciCalc.createButton('key_btnSqrt','key_btnSqrt','&#8730;');
@@ -438,8 +439,8 @@
 
 					//var key_btnMult = SciCalc.createButton('key_btnMult','key_btnNormal','&times;');
 					//var key_btnDiv = SciCalc.createButton('key_btnDiv','key_btnNormal','&divide;');
-					var key_btnMult = SciCalc.createButton('key_btnMult','key_btnMult','*');
-					var key_btnDiv = SciCalc.createButton('key_btnDiv','key_btnDiv','/');
+					var key_btnMult = SciCalc.createButton('key_btnMult','key_btnNormal','*');
+					var key_btnDiv = SciCalc.createButton('key_btnDiv','key_btnNormal','/');
 					
 					var key_btnEnter = SciCalc.createButton('key_btnEnter','key_btnEnter','=');
 
