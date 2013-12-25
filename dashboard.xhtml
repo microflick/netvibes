@@ -21,27 +21,46 @@
 
         <!-- Application Styles -->
         <style type="text/css">
+			.myWidgetLeft {width:33%;float:left}
+			.myWidgetLeft .module {min-width:420px;width:90%}
         </style>
     </head>
     <body>
         <!-- UWA Embedded initialisation -->
-		<div class="myWidget">
+		<div class="myWidgetLeft">
 		 <script type="text/javascript">
-			 var MyApp = new UWA.Embedded('http://www.netvibes.com/modules/twitter/twitter.html'
+			var MyApp1 = new UWA.Embedded('https://raw.github.com/arulprasathr/netvibes/master/SciCalc.xhtml'
 			 //,{displayHeader: false,displayFooter: false}
-			 );
-			 var MyApp2 = new UWA.Embedded('http://www.netvibes.com/modules/smartFilter/smartFilter.html'
-			 //,{displayHeader: false,displayFooter: false}
+			 ,{displayFooter: false , options:{"title":"Test","color":"red"}}
 			 );
 			 
-			 var MyApp3 = new UWA.Embedded('http://www.netvibes.com/modules/extendedVibes/extendedVibes.html'
+			 //var MyApp1 = new UWA.Embedded('https://raw.github.com/arulprasathr/netvibes/master/chart1.xhtml'
 			 //,{displayHeader: false,displayFooter: false}
-			 );
+			 //);
+			 //var MyApp2 = new UWA.Embedded('http://www.netvibes.com/modules/smartFilter/smartFilter.html'
+			 //,{displayHeader: false,displayFooter: false}
+			 //);
 			 
-			 var MyApp4 = new UWA.Embedded('http://www.netvibes.com/modules/SocialPack/analytics/analytics.html'
+			 //var MyApp3 = new UWA.Embedded('http://www.netvibes.com/modules/extendedVibes/extendedVibes.html'
 			 //,{displayHeader: false,displayFooter: false}
-			 );
+			 //);
+			 
+			 //var MyApp4 = new UWA.Embedded('http://www.netvibes.com/modules/SocialPack/analytics/analytics.html'
+			 //,{displayHeader: false,displayFooter: false}
+			 //);
 		 </script>
+		</div>
+		<div class="myWidgetLeft">
+		<script type="text/javascript">
+			var MyApp2 = new UWA.Embedded('http://www.netvibes.com/modules/SocialPack/analytics/analytics.html'
+			 );
+		</script>
+		</div>
+		<div class="myWidgetLeft">
+		<script type="text/javascript">
+			var MyApp3 = new UWA.Embedded('http://www.netvibes.com/modules/smartFilter/smartFilter.html'
+			 );
+		</script>
 		</div>
     </body>
 </html>
