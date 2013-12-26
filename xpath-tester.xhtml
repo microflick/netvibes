@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:widget="http://www.netvibes.com/ns/">
+    <head>
+        <!-- Application Metas -->
+        <title>XPath Tester</title>
+        <meta name="author" content="Arul Rajendiran (IXK)" />
+        <meta name="apiVersion" content="1.3" />
+        <meta name="debugMode" content="false" />
+        <meta name="strictMode" content="true" />
+        <meta name="description" content="A simple xpath evaluator" />
+        <meta name="keywords" content="xpath" />
+        <meta name="version" content="1.0" />
+        <meta name="inline" content="true" />
+
+        <!-- Application Icons -->
+        <!-- <link rel="icon" type="image/gif" href="icon.gif" />-->
+
+        <!-- UWA Environment -->
+        <link rel="stylesheet" type="text/css" href="http://uwa.netvibes.com/lib/c/UWA/assets/css/standalone.css" />
+        <script type="text/javascript" src="http://uwa.netvibes.com/lib/c/UWA/js/UWA_Standalone_Alone.js"></script>
+        <script type="text/javascript" src="http://uwa.netvibes.com/lib/c/UWA/js/UWA_Controls_Flash.js"></script>
+        
+        <!-- Widget Preferences -->
+        <widget:preferences>
+            <preference type="text" name="xmlPath" label="XML Path" defaultValue="http://ixkw764plp:8080/netvibes/test.xml"/>
+            <preference type="text" name="defXPath" label="Default XPath" defaultValue="/root/servlet"/>
+        </widget:preferences>
+
+        <!-- Application Styles -->
+        <style type="text/css">
+
+
+        </style>
+
+<script type="text/javascript">
+//<![CDATA[
+	var strUserAgent = navigator.userAgent.toLowerCase();
+	var isIE = strUserAgent.indexOf("msie") > -1 && strUserAgent.indexOf("opera") == -1;
+	
+    var XPathEval = {
+
+        /**
+         * @property {Object} elements - Store all DOM elements.
+         */
+        elements: {},
+
+
+        /**
+         * Keyboard manager.
+         * Map some keyboard key to calculator then
+         * trigger click events on the keys.
+         * @param {Event} event - keyboard event.
+         */
+        onKeyPress: function (event) {
+
+        },
+
+        /**
+         * Help to know if mouse is over our calculator
+         */
+        onMouseEnter: function () {
+        	XPathEval.mouseIn = true;
+        },
+
+        /**
+         * Help to know if mouse is over our calculator
+         */
+        onMouseLeave: function () {
+        	XPathEval.mouseIn = false;
+        },
+        
+        getXMLData : function _emxUICore_getXMLData(strURL, namespace) {
+    		var ts = new Date().getTime();
+    		var strURL = widget.getValue('xmlPath');
+    		if (strURL.indexOf("?") != -1)
+    		{
+    			strURL += "&ajax-no-cache=" + ts;
+    		}
+    		else
+    		{
+    			strURL += "?ajax-no-cache=" + ts;
+    		}			
+    		
+    		var myRequest = UWA.Data.request(strURL, {
+   			   type: 'xml',  // Set response type to xml document
+   			   cache: 3600,  // Set cache to one hour
+   			   onComplete: XPathEval.OnRequestComplete
+   			 });
+        },
+        OnRequestComplete : function (docXML) {
+        	var ipxPathStr = widget.getElement('#xPathStr');
+        	var strXPath = ipxPathStr.value;
+        	
+        	var nArray = XPathEval.selectNodes(docXML,strXPath);
+        	
+        	var title = widget.createElement('h3', {text : 'Result'});
+        	title.inject(XPathEval.elements.xpathResults.empty());
+        	
+        	if(nArray.length > 0){
+        		var uList = widget.createElement('ul');
+            	for(var i = 0; i < nArray.length; i++){
+            		var sNodeType = XmlNodeType[nArray[i].nodeType];
+            		var sNodeVal = (nArray[i].tagName) ? nArray[i].tagName : nArray[i].nodeValue;
+            		li = widget.createElement('li', {text : sNodeType +' : ' + sNodeVal});
+            		li.inject(uList);
+            	}
+            	
+            	uList.inject(XPathEval.elements.xpathResults);
+        	}else{
+        		var noMatch = widget.createElement('h5', {text : 'Invalid xPath Expression'});
+        		noMatch.inject(XPathEval.elements.xpathResults);
+        	}
+        	
+        },
+        checkDOMError : function _emxUICore_checkDOMError_Moz(objXML, strFile) {
+             if (objXML.parseError != 0 || objXML.documentElement.tagName == "parsererror") {
+             	alert("XML cannot be parsed");
+             }
+        },
+        selectNodes : function (objRefNode, strXPath) {
+        	if (objRefNode.nodeType == 9) {
+        		objRefNode = objRefNode.documentElement;
+        	}
+            if (isIE) {
+                var arrNodes = objRefNode.selectNodes(strXPath);
+                var arrResult = new Array;
+                for (var i=0; i < arrNodes.length; i++) {
+                    arrResult.push(arrNodes[i]);
+                }
+                return arrResult;
+            } else {
+                var objEvaluator = new XPathEvaluator();
+                var objNSResolver = objEvaluator.createNSResolver(objRefNode.ownerDocument.documentElement);
+                var objNodes = objEvaluator.evaluate(strXPath, objRefNode, objNSResolver, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+                var arrResult = new Array;
+                var objNext;
+                while (objNext = objNodes.iterateNext()) {
+                    arrResult.push(objNext);
+                }
+                return arrResult;
+            }
+        },
+
+        selectSingleNode: function (objRefNode, strXPath) {
+        	if (objRefNode.nodeType == 9) {
+        		objRefNode = objRefNode.documentElement;
+        	}
+            if (isIE) {
+                return objRefNode.selectSingleNode(strXPath);
+            } else {
+                var objEvaluator = new XPathEvaluator();
+                var objNSResolver = objEvaluator.createNSResolver(objRefNode.ownerDocument.documentElement);
+                var objNodes = objEvaluator.evaluate(strXPath, objRefNode, objNSResolver, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+                return objNodes.iterateNext();
+            }
+        },
+
+        /**
+         * Help to know if mouse is over our calculator
+         */
+        evalXpath: function () {
+        	XPathEval.getXMLData(widget.getValue('xmlPath'));
+        },
+
+        /**
+         * Build the calculator
+         */
+        onLoad: function () {
+            widget.body.setStyle('padding', 10);
+            widget.setTitle(UWA.i18n("XPath Tester"));
+            var els = XPathEval.elements,
+            start = widget.createElement('div', {
+                'class' : 'XPathEval',
+                html: [
+                       {
+                           tag: 'label',
+                           text : UWA.i18n("XPath")+ ': '
+                       },
+                       {
+                           tag: 'input',
+                           type : 'text',
+                           id : 'xPathStr',
+                           size : '30',
+                           value : widget.getValue('defXPath')
+                       },
+                       {
+                           tag: 'input',
+                           type : 'button',
+                           value : 'Evaluate',
+                           events: {
+                               click: XPathEval.evalXpath
+                           }
+                       },
+                       {
+                           tag: 'div',
+                           id : 'xpathResults'
+                       }
+                   ],
+            });
+            els.xpathResults = start.getElement('#xpathResults');
+            start.inject(widget.body.empty());
+
+        }
+    };
+    
+    var XmlNodeType = {'1': 'ELEMENT_NODE',
+    		           '2':'ATTRIBUTE_NODE',
+    		           '3':'TEXT_NODE',
+                       '4':'CDATA_SECTION_NODE',
+                       '5':'ENTITY_REFERENCE_NODE',
+                       '6':'ENTITY_NODE',
+                       '7':'PROCESSING_INSTRUCTION_NODE',
+                       '8':'COMMENT_NODE',
+                       '9':'DOCUMENT_NODE',
+                       '10':'DOCUMENT_TYPE_NODE',
+                       '11':'DOCUMENT_FRAGMENT_NODE',
+                       '12':'NOTATION_NODE'};
+    
+    var XMLHelper = 
+    {
+    	GetXMLDocument : function() {	
+    		if (isIE) {
+    			var Activex_Doms = [
+    				"Msxml2.DOMDocument.5.0", 
+    				"Msxml2.DOMDocument.4.0", 
+    				"Msxml2.DOMDocument.3.0", 
+    				"MSXML2.DOMDocument", 
+    				"MSXML.DOMDocument", 
+    				"Microsoft.XMLDOM"
+    			];			
+    			var Activex_Dom = null;
+    			for(var i = 0 ; i < Activex_Doms.length ; i++) {
+    				try{
+    					var success = new ActiveXObject(Activex_Doms[i]);
+    					if(success){
+    						Activex_Dom = Activex_Doms[i];
+    						break;
+    						//return testObj;
+    					}
+    				}catch(e){}
+    			}			
+    			return function() {
+    				return new ActiveXObject(Activex_Dom);
+    			}	
+    		}			
+    	}()
+    	,
+    	GetXSLDocument : function() {		
+    		if (isIE) {
+    			var Activex_FT_Doms = [
+    				"Msxml2.FreeThreadedDOMDocument.5.0", 
+    				"MSXML2.FreeThreadedDOMDocument.4.0", 
+    				"MSXML2.FreeThreadedDOMDocument.3.0"
+    			];			
+    			var Activex_FT_Dom = null;			
+    			for(var i = 0 ; i < Activex_FT_Doms.length ; i++) {
+    				try { 
+    					var success = new ActiveXObject(Activex_FT_Doms[i]);
+    					if(success) {
+    					  Activex_FT_Dom = Activex_FT_Doms[i];
+    					  break;
+    					}
+    				} catch(e) { } 
+    			}			
+    			return function() {
+    				return new ActiveXObject(Activex_FT_Dom);
+    			}	
+    		}
+    	}()
+    	,	
+    	GetXSLTemplate : function() {	
+    		if (isIE) {
+    			var Activex_Templates = [
+    				"Msxml2.XSLTemplate.5.0", 
+    				"Msxml2.XSLTemplate.4.0", 
+    				"MSXML2.XSLTemplate.3.0"
+    			];			
+    			var Activex_Template = null;			
+    			for(var i = 0 ; i < Activex_Templates.length ; i++) {
+    				try { 
+    					var success = new ActiveXObject(Activex_Templates[i]);
+    					if(success) {
+    					  Activex_Template = Activex_Templates[i];
+    					  break;
+    					}
+    				} catch(e) { } 
+    			}			
+    			return function() {
+    				return new ActiveXObject(Activex_Template);
+    			}
+    		}
+    	}()
+    	,
+    	CreateXMLDocument : function _CreateXMLDocument(namespace) {
+    		if(isIE) {
+    			var doc = XMLHelper.GetXMLDocument();
+    			doc.setProperty("SelectionLanguage", "XPath");
+    			if (namespace != null) {
+    			  doc.setProperty("SelectionNamespaces", namespace);
+    			} else {
+    			  doc.setProperty("SelectionNamespaces", "xmlns:aef='http://www.matrixone.com/aef'");
+    			}
+    			return doc;
+    		} else {
+    			return document.implementation.createDocument("", "", null);
+    		}		
+    	}
+    };
+
+    /**
+     * The "onLoad" event is the very first event triggered when
+     * the widget is fully loaded or when the preferences are validated.
+     * Here, we add Calc.onLoad() function as "onLoad" event
+     * listener on the widget.
+     */
+    widget.addEvents({
+        onLoad: XPathEval.onLoad
+    });
+    
+    if (widget.launched) {
+    	XPathEval.onLoad();
+    }
+
+//]]>
+</script>
+    </head>
+    <body>
+        <p>Loading...</p>
+    </body>
+</html>
