@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:widget="http://www.netvibes.com/ns/">
+    <head>
+        <!-- Application Metas -->
+        <title>Regex Tester</title>
+        <meta name="author" content="Arul Rajendiran (IXK)" />
+        <meta name="apiVersion" content="1.3" />
+        <meta name="debugMode" content="false" />
+        <meta name="strictMode" content="true" />
+        <meta name="description" content="A simple regex tester" />
+        <meta name="keywords" content="regex" />
+        <meta name="version" content="1.0" />
+        <meta name="inline" content="true" />
+
+        <!-- Application Icons -->
+        <!-- <link rel="icon" type="image/gif" href="icon.gif" />-->
+
+        <!-- UWA Environment -->
+        <link rel="stylesheet" type="text/css" href="http://uwa.netvibes.com/lib/c/UWA/assets/css/standalone.css" />
+        <script type="text/javascript" src="http://uwa.netvibes.com/lib/c/UWA/js/UWA_Standalone_Alone.js"></script>
+        <script type="text/javascript" src="http://uwa.netvibes.com/lib/c/UWA/js/UWA_Controls_Flash.js"></script>
+        
+        <!-- Widget Preferences -->
+        <widget:preferences>
+            <preference type="text" name="defRegEx" label="Default Regex" defaultValue="\bt[a-z]+\b"/>
+            <preference type="text" name="defSubStr" label="Default Subject String" defaultValue="This is a test of the JavaScript RegExp object"/>
+            <preference type="text" name="defReplaceStr" label="Default Replace String" defaultValue="replaced"/>
+        </widget:preferences>
+
+        <!-- Application Styles -->
+        <style type="text/css">
+
+
+        </style>
+
+<script type="text/javascript">
+//<![CDATA[
+
+    var RegExTst = {
+
+        /**
+         * @property {Object} elements - Store all DOM elements.
+         */
+        elements: {},
+
+
+        /**
+         * Keyboard manager.
+         * Map some keyboard key to calculator then
+         * trigger click events on the keys.
+         * @param {Event} event - keyboard event.
+         */
+        onKeyPress: function (event) {
+
+        },
+
+        /**
+         * Help to know if mouse is over our calculator
+         */
+        onMouseEnter: function () {
+        	RegExTst.mouseIn = true;
+        },
+
+        /**
+         * Help to know if mouse is over our calculator
+         */
+        onMouseLeave: function () {
+        	RegExTst.mouseIn = false;
+        },
+        
+        /**
+         * Help to know if mouse is over our calculator
+         */
+        showMatch: function () {
+        	var ipRegExp = widget.getElement('#regExp');
+        	var ipSubStr = widget.getElement('#subStr');
+        	var re = new RegExp(ipRegExp.value);
+        	var m = re.exec(ipSubStr.value);
+        	if (m == null) {
+        		alert(UWA.i18n("No Match"));
+        	} else {
+        		var s = "Match at position " + m.index + ":\n";
+        		for (i = 0; i < m.length; i++) {
+        			s = s + m[i] + "\n";
+        		}
+        		alert(s);
+        	}
+        },
+        
+        /**
+         * Help to know if mouse is over our calculator
+         */
+        replaceMatch: function () {
+        	var ipRegExp = widget.getElement('#regExp');
+        	var ipSubStr = widget.getElement('#subStr');
+        	
+        	var ipResultStr = widget.getElement('#resultStr');
+        	var ipReplaceStr = widget.getElement('#replaceStr');
+        	
+        	var re = new RegExp(ipRegExp.value, "g");
+        	ipResultStr.value = ipSubStr.value.replace(re, ipReplaceStr.value);
+        },
+
+        /**
+         * Build the calculator
+         */
+        onLoad: function () {
+            widget.body.setStyle('padding', 10);
+            widget.setTitle(UWA.i18n("Regex Tester"));
+            
+            start = widget.createElement('div', {
+                'class' : 'RegExTst',
+                html: [
+                       {
+                           tag: 'label',
+                           text : UWA.i18n("Reg Expr")+ ': '
+                       },
+                       {
+                           tag: 'input',
+                           type : 'text',
+                           id : 'regExp',
+                           size : '30',
+                           value : widget.getValue('defRegEx')
+                       },
+                       {
+                           tag: 'br'
+                       },
+                       {
+                           tag: 'label',
+                           text : UWA.i18n("Subject String")+ ': '
+                       },
+                       {
+                           tag: 'input',
+                           type : 'text',
+                           id : 'subStr',
+                           size : '50',
+                           value : widget.getValue('defSubStr')
+                       },
+                       {
+                           tag: 'br'
+                       },
+                       {
+                           tag: 'input',
+                           type: 'button',
+                           value : UWA.i18n("Show Match"),
+                           events: {
+                               click: RegExTst.showMatch
+                           }
+                       },
+                       {
+                           tag: 'br'
+                       },
+                       {
+                           tag: 'label',
+                           text : UWA.i18n("Replace")+ ': '
+                       },
+                       {
+                           tag: 'input',
+                           type: 'text',
+                           id : 'replaceStr',
+                           size : '30',
+                           value : widget.getValue('defReplaceStr')
+                       },
+                       {
+                           tag: 'br'
+                       },
+                       {
+                           tag: 'label',
+                           text : UWA.i18n("Result")+ ': '
+                       },
+                       {
+                           tag: 'input',
+                           type : 'text',
+                           id : 'resultStr',
+                           size : '50',
+                       },
+                       {
+                           tag: 'br'
+                       },
+                       {
+                           tag: 'input',
+                           type: 'button',
+                           value : UWA.i18n("Result"),
+                           events: {
+                               click: RegExTst.replaceMatch
+                           }
+                       }
+                   ],
+            });
+            
+            start.inject(widget.body.empty());
+
+        }
+    };
+
+    /**
+     * The "onLoad" event is the very first event triggered when
+     * the widget is fully loaded or when the preferences are validated.
+     * Here, we add Calc.onLoad() function as "onLoad" event
+     * listener on the widget.
+     */
+    widget.addEvents({
+        onLoad: RegExTst.onLoad
+    });
+    
+    if (widget.launched) {
+    	RegExTst.onLoad();
+    }
+
+//]]>
+</script>
+    </head>
+    <body>
+        <p>Loading...</p>
+    </body>
+</html>
