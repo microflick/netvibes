@@ -5,8 +5,8 @@
         <!-- Application Metas -->
         <title>Dashboard</title>
         <meta name="author" content="Arul Rajendiran" />
-		<meta name="version" content="1.0" />
-        <meta name="description" content="Display Hello World for UWA" />
+	<meta name="version" content="1.0" />
+        <meta name="description" content="My Dashboard" />
         <meta name="apiVersion" content="1.3" />
         <meta name="debugMode" content="false" />
         <meta name="strictMode" content="false" />
@@ -21,8 +21,8 @@
 
         <!-- Application Styles -->
         <style type="text/css">
-			.myWidgetLeft {width:50%;float:left}
-			.myWidgetLeft .module {min-width:420px;width:90%}
+			.myWidgetLeft {width:33%;float:left}
+			.myWidgetLeft .module {width:90%}
         </style>
     </head>
     <body>
@@ -74,7 +74,7 @@
 		<script type="text/javascript">
 			var MyApp4 = new UWA.Embedded('https://raw.github.com/arulprasathr/netvibes/master/chart1.xhtml',{
 					data: {
-						defUrl: 'https://raw.github.com/arulprasathr/netvibes/master/data/chart1-data.json'
+						defUrl: 'https://raw.github.com/arulprasathr/netvibes/master/data/chart4-data.json'
 					}
 				}
 			 );
@@ -82,16 +82,20 @@
 		</div>
 		<div class="myWidgetLeft">
 		<script type="text/javascript">
-			var MyApp5 = new UWA.Embedded('https://raw.github.com/arulprasathr/netvibes/master/map-demo.xhtml'
+			var MyApp5 = new UWA.Embedded('https://raw.github.com/arulprasathr/netvibes/master/xpath-tester.xhtml'
 			 );
 		</script>
-		</div>		<div class="myWidgetLeft">
+		</div>
+		<div class="myWidgetLeft">
 		<script type="text/javascript">
-			var MyApp6 = new UWA.Embedded('https://raw.github.com/arulprasathr/netvibes/master/chart1.xhtml',{
-					data: {
-						defUrl: 'https://raw.github.com/arulprasathr/netvibes/master/data/chart4-data.json'
-					}
-				}
+			var MyApp6 = new UWA.Embedded('https://raw.github.com/arulprasathr/netvibes/master/text-util.xhtml'
+			 );
+		</script>
+		</div>
+		
+		<div class="myWidgetLeft">
+		<script type="text/javascript">
+			var MyApp7 = new UWA.Embedded('https://raw.github.com/arulprasathr/netvibes/master/regex-tester.xhtml'
 			 );
 		</script>
 		</div>
