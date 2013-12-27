@@ -32,6 +32,10 @@
         		height : 50px;
         		width : 50px;
         		margin : 20px;
+        		float : left;
+        	}
+        	.Colors #controls {
+        		float : left;
         	}
         	.Colors #colorDivDark,
         	.Colors #colorDivLight {
@@ -184,9 +188,9 @@
 					r = parseInt(r);
 					g = parseInt(g);
 					b = parseInt(b);
-					r-= shade;
-					g-= shade;
-					b-= shade;
+					if ((r-= shade) < 0) r = 0;
+					if ((g-= shade) < 0) g = 0;
+					if ((b-= shade) < 0) b = 0;
 					
 					widget.getElement('#colorDivDark').setStyle('background-color','#'+Colors.rgbToHex(r, g, b));
 				},
@@ -195,9 +199,9 @@
 					r = parseInt(r);
 					g = parseInt(g);
 					b = parseInt(b);
-					r+= shade;
-					g+= shade;
-					b+= shade;
+					if ((r+= shade) >255) r = 255;
+					if ((g+= shade) >255) g = 255;
+					if ((b+= shade) >255) b = 255;
 					
 					widget.getElement('#colorDivLight').setStyle('background-color','#'+Colors.rgbToHex(r, g, b));
 				},
@@ -215,52 +219,56 @@
 										{ tag: 'div', id: 'colorDiv' },
 										{ tag: 'div', id: 'colorDivDark' },
 										{ tag: 'div', id: 'colorDivLight' },
-										{ tag: 'br'},
-										{ tag: 'label', text: 'R : ' },
-										{ tag: 'input', type : 'text', id : 'colorR', size : 5},
-										{ tag: 'input', type : 'range' , 'min' : 0, 'max' : 255, 'step' : 1, id : 'rangeR', size : 5,
-											value: widget.getValue('defR') ,
-											events: {
-												input: Colors.onRangeInput
-						                    }
-										},
-										{ tag: 'br'},
-										{ tag: 'label', text: ' G : ' },
-										{ tag: 'input', type : 'text', id : 'colorG', size : 5},
-										{ tag: 'input', type : 'range' , 'min' : 0, 'max' : 255, 'step' : 1, id : 'rangeG', size : 5,
-											value: widget.getValue('defG') ,
-											events: {
-												input: Colors.onRangeInput
-						                    }
-										},
-										{ tag: 'br'},
-										{ tag: 'label', text: ' B : ' },
-										{ tag: 'input', type : 'text', id : 'colorB', size : 5},
-										{ tag: 'input', type : 'range' , 'min' : 0, 'max' : 255, 'step' : 1, id : 'rangeB', size : 5,
-											value: widget.getValue('defB') ,
-											events: {
-												input: Colors.onRangeInput
-						                    }
-										},
-										{ tag: 'br'},
-										{ tag: 'label', text: 'Hex : ' },
-										{ tag: 'input', type : 'text', id : 'colorHex', size : 10,disabled : 'disabled' },
-										{ tag: 'br'},
-										{ tag: 'label', text: 'C : ' },
-										{ tag: 'input', type : 'text', id : 'colorC', size : 10,disabled : 'disabled' },
-										{ tag: 'label', text: ' M : ' },
-										{ tag: 'input', type : 'text', id : 'colorM', size : 10,disabled : 'disabled' },
-										{ tag: 'label', text: ' Y : ' },
-										{ tag: 'input', type : 'text', id : 'colorY', size : 10,disabled : 'disabled' },
-										{ tag: 'label', text: ' K : ' },
-										{ tag: 'input', type : 'text', id : 'colorK', size : 10,disabled : 'disabled' },
-										{ tag: 'br'},
-										{ tag: 'label', text: 'H : ' },
-										{ tag: 'input', type : 'text', id : 'colorH', size : 10,disabled : 'disabled' },
-										{ tag: 'label', text: ' S : ' },
-										{ tag: 'input', type : 'text', id : 'colorS', size : 10,disabled : 'disabled' },
-										{ tag: 'label', text: ' V : ' },
-										{ tag: 'input', type : 'text', id : 'colorV', size : 10,disabled : 'disabled' }
+										{ tag: 'div', id: 'controls', html : 
+											[
+												{ tag: 'label', text: 'R : ' },
+												{ tag: 'input', type : 'text', id : 'colorR', size : 5},
+												{ tag: 'input', type : 'range' , 'min' : 0, 'max' : 255, 'step' : 1, id : 'rangeR', size : 5,
+													value: widget.getValue('defR') ,
+													events: {
+														input: Colors.onRangeInput
+												    }
+												},
+												{ tag: 'br'},
+												{ tag: 'label', text: ' G : ' },
+												{ tag: 'input', type : 'text', id : 'colorG', size : 5},
+												{ tag: 'input', type : 'range' , 'min' : 0, 'max' : 255, 'step' : 1, id : 'rangeG', size : 5,
+													value: widget.getValue('defG') ,
+													events: {
+														input: Colors.onRangeInput
+												    }
+												},
+												{ tag: 'br'},
+												{ tag: 'label', text: ' B : ' },
+												{ tag: 'input', type : 'text', id : 'colorB', size : 5},
+												{ tag: 'input', type : 'range' , 'min' : 0, 'max' : 255, 'step' : 1, id : 'rangeB', size : 5,
+													value: widget.getValue('defB') ,
+													events: {
+														input: Colors.onRangeInput
+												    }
+												},
+												{ tag: 'br'},
+												{ tag: 'label', text: 'Hex : ' },
+												{ tag: 'input', type : 'text', id : 'colorHex', size : 10,disabled : 'disabled' },
+												{ tag: 'br'},
+												{ tag: 'label', text: 'C : ' },
+												{ tag: 'input', type : 'text', id : 'colorC', size : 10,disabled : 'disabled' },
+												{ tag: 'label', text: ' M : ' },
+												{ tag: 'input', type : 'text', id : 'colorM', size : 10,disabled : 'disabled' },
+												{ tag: 'label', text: ' Y : ' },
+												{ tag: 'input', type : 'text', id : 'colorY', size : 10,disabled : 'disabled' },
+												{ tag: 'label', text: ' K : ' },
+												{ tag: 'input', type : 'text', id : 'colorK', size : 10,disabled : 'disabled' },
+												{ tag: 'br'},
+												{ tag: 'label', text: 'H : ' },
+												{ tag: 'input', type : 'text', id : 'colorH', size : 10,disabled : 'disabled' },
+												{ tag: 'label', text: ' S : ' },
+												{ tag: 'input', type : 'text', id : 'colorS', size : 10,disabled : 'disabled' },
+												{ tag: 'label', text: ' V : ' },
+												{ tag: 'input', type : 'text', id : 'colorV', size : 10,disabled : 'disabled' }
+											 
+											] },
+										
 									]
 										
 									});
