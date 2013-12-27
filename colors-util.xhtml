@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:widget="http://www.netvibes.com/ns/">
+    <head>
+        <!-- Application Infos -->
+        <title>Colors Util</title>
+        <meta name="description" content="UUID Generator" />
+        <meta name="author" content="Arul Rajendiran" />
+        <meta name="version" content="1.0" />
+        <meta name="apiVersion" content="1.3" />
+        <meta name="debugMode" content="true" />
+        <meta name="strictMode" content="false" />
+
+        <!-- UWA Environment -->
+        <link rel="stylesheet" type="text/css" href="http://uwa.netvibes.com/lib/c/UWA/assets/css/standalone.css" />
+        <script type="text/javascript" src="http://uwa.netvibes.com/lib/c/UWA/js/UWA_Standalone_Alone.js"></script>
+		
+        <!-- Application Preferences -->
+        <widget:preferences>
+            <widget:preference type="text" name="defR" label="R" defaultValue="0"/>
+            <widget:preference type="text" name="defG" label="G" defaultValue="0"/>
+            <widget:preference type="text" name="defB" label="B" defaultValue="0"/>
+        </widget:preferences>
+
+        <!-- Application Styles -->
+        <style type="text/css">
+        	.Colors {
+        	}
+        	.Colors #colorDiv {
+        		height : 50px;
+        		width : 50px;
+        		margin : 20px;
+        	}
+        	.Colors #rangeR {
+        		background-color : white;
+        		color : white;
+        	}
+        	.Colors #rangeG {
+        		background-color : white;
+        		color : white;
+        	}
+        	.Colors #rangeB {
+        		background-color : white;
+        		color : white;
+        	}
+        </style>
+
+        <!-- Application Source -->
+        <script type="text/javascript">
+        //<![CDATA[
+
+            /*
+                We create the global MyWidget object (it could be any other name).
+                This object will be used to store variables and function.
+            */
+            var Colors = {
+
+                /*
+                    The onLoad() function is the first one, triggered by widget.onLoad.
+                    Its use is to display a "Loading" message, then call the next method.
+                */
+				rgbToHex : function (R,G,B) {return Colors.toHex(R)+Colors.toHex(G)+Colors.toHex(B)},
+				toHex : function (n) {
+				 n = parseInt(n,10);
+				 if (isNaN(n)) return "00";
+				 n = Math.max(0,Math.min(n,255));
+				 return "0123456789ABCDEF".charAt((n-n%16)/16)
+				      + "0123456789ABCDEF".charAt(n%16);
+				},
+				rgb2cmyk : function (r,g,b) {
+					 var computedC = 0;
+					 var computedM = 0;
+					 var computedY = 0;
+					 var computedK = 0;
+
+					 //remove spaces from input RGB values, convert to int
+					 var r = parseInt( (''+r).replace(/\s/g,''),10 ); 
+					 var g = parseInt( (''+g).replace(/\s/g,''),10 ); 
+					 var b = parseInt( (''+b).replace(/\s/g,''),10 ); 
+
+					 if ( r==null || g==null || b==null ||
+					     isNaN(r) || isNaN(g)|| isNaN(b) )
+					 {
+					   alert ('Please enter numeric RGB values!');
+					   return;
+					 }
+					 if (r<0 || g<0 || b<0 || r>255 || g>255 || b>255) {
+					   alert ('RGB values must be in the range 0 to 255.');
+					   return;
+					 }
+
+					 // BLACK
+					 if (r==0 && g==0 && b==0) {
+					  computedK = 1;
+					  return [0,0,0,1];
+					 }
+
+					 computedC = 1 - (r/255);
+					 computedM = 1 - (g/255);
+					 computedY = 1 - (b/255);
+
+					 var minCMY = Math.min(computedC,
+					              Math.min(computedM,computedY));
+					 computedC = (computedC - minCMY) / (1 - minCMY) ;
+					 computedM = (computedM - minCMY) / (1 - minCMY) ;
+					 computedY = (computedY - minCMY) / (1 - minCMY) ;
+					 computedK = minCMY;
+
+					 return [computedC,computedM,computedY,computedK];
+				},
+				rgb2hsv : function (r,g,b) {
+					 var computedH = 0;
+					 var computedS = 0;
+					 var computedV = 0;
+
+					 //remove spaces from input RGB values, convert to int
+					 var r = parseInt( (''+r).replace(/\s/g,''),10 ); 
+					 var g = parseInt( (''+g).replace(/\s/g,''),10 ); 
+					 var b = parseInt( (''+b).replace(/\s/g,''),10 ); 
+
+					 if ( r==null || g==null || b==null ||
+					     isNaN(r) || isNaN(g)|| isNaN(b) ) {
+					   alert ('Please enter numeric RGB values!');
+					   return;
+					 }
+					 if (r<0 || g<0 || b<0 || r>255 || g>255 || b>255) {
+					   alert ('RGB values must be in the range 0 to 255.');
+					   return;
+					 }
+					 r=r/255; g=g/255; b=b/255;
+					 var minRGB = Math.min(r,Math.min(g,b));
+					 var maxRGB = Math.max(r,Math.max(g,b));
+
+					 // Black-gray-white
+					 if (minRGB==maxRGB) {
+					  computedV = minRGB;
+					  return [0,0,computedV];
+					 }
+
+					 // Colors other than black-gray-white:
+					 var d = (r==minRGB) ? g-b : ((b==minRGB) ? r-g : b-r);
+					 var h = (r==minRGB) ? 3 : ((b==minRGB) ? 1 : 5);
+					 computedH = 60*(h - d/(maxRGB - minRGB));
+					 computedS = (maxRGB - minRGB)/maxRGB;
+					 computedV = maxRGB;
+					 return [computedH,computedS,computedV];
+				},
+				
+				hexToR : function (h) {return parseInt((Colors.cutHex(h)).substring(0,2),16)},
+				hexToG : function (h) {return parseInt((Colors.cutHex(h)).substring(2,4),16)},
+				hexToB : function (h) {return parseInt((Colors.cutHex(h)).substring(4,6),16)},
+				cutHex : function (h) {return (h.charAt(0)=="#") ? h.substring(1,7):h},
+				onRangeInput : function (){
+					Colors.fillValues();
+				},
+				fillValues : function(){
+					var R = widget.getElement('#rangeR').value;
+					var G = widget.getElement('#rangeG').value;
+					var B = widget.getElement('#rangeB').value;
+					widget.getElement('#colorR').value = R;
+					widget.getElement('#colorG').value = G;
+					widget.getElement('#colorB').value = B;
+					widget.getElement('#colorHex').value = '#'+Colors.rgbToHex(R, G, B);
+					widget.getElement('#colorDiv').setStyle('background-color','#'+Colors.rgbToHex(R, G, B));
+					widget.getElement('#colorC').value = Colors.rgb2cmyk(R, G, B)[0].toFixed(5);
+					widget.getElement('#colorM').value = Colors.rgb2cmyk(R, G, B)[1].toFixed(5);
+					widget.getElement('#colorY').value = Colors.rgb2cmyk(R, G, B)[2].toFixed(5);
+					widget.getElement('#colorK').value = Colors.rgb2cmyk(R, G, B)[3].toFixed(5);
+					widget.getElement('#colorH').value = Colors.rgb2hsv(R, G, B)[0].toFixed(5);
+					widget.getElement('#colorS').value = Colors.rgb2hsv(R, G, B)[1].toFixed(5);
+					widget.getElement('#colorV').value = Colors.rgb2hsv(R, G, B)[2].toFixed(5);
+				},
+				
+                onLoad: function() {
+
+                    widget.body.setContent('Loading...');
+
+                    var start = UWA.createElement('div', 
+									{
+									class: 'Colors',
+									id: 'Colors',
+									html: [
+										{ tag: 'h2', text: 'Colors Util' },
+										{ tag: 'div', id: 'colorDiv' },
+										{ tag: 'label', text: 'R : ' },
+										{ tag: 'input', type : 'text', id : 'colorR', size : 5},
+										{ tag: 'input', type : 'range' , 'min' : 0, 'max' : 255, 'step' : 1, id : 'rangeR', size : 5,
+											value: widget.getValue('defR') ,
+											events: {
+												input: Colors.onRangeInput
+						                    }
+										},
+										{ tag: 'br'},
+										{ tag: 'label', text: ' G : ' },
+										{ tag: 'input', type : 'text', id : 'colorG', size : 5},
+										{ tag: 'input', type : 'range' , 'min' : 0, 'max' : 255, 'step' : 1, id : 'rangeG', size : 5,
+											value: widget.getValue('defR') ,
+											events: {
+												input: Colors.onRangeInput
+						                    }
+										},
+										{ tag: 'br'},
+										{ tag: 'label', text: ' B : ' },
+										{ tag: 'input', type : 'text', id : 'colorB', size : 5},
+										{ tag: 'input', type : 'range' , 'min' : 0, 'max' : 255, 'step' : 1, id : 'rangeB', size : 5,
+											value: widget.getValue('defR') ,
+											events: {
+												input: Colors.onRangeInput
+						                    }
+										},
+										{ tag: 'br'},
+										{ tag: 'label', text: 'Hex : ' },
+										{ tag: 'input', type : 'text', id : 'colorHex', size : 10,disabled : 'disabled' },
+										{ tag: 'br'},
+										{ tag: 'label', text: 'C : ' },
+										{ tag: 'input', type : 'text', id : 'colorC', size : 10,disabled : 'disabled' },
+										{ tag: 'label', text: ' M : ' },
+										{ tag: 'input', type : 'text', id : 'colorM', size : 10,disabled : 'disabled' },
+										{ tag: 'label', text: ' Y : ' },
+										{ tag: 'input', type : 'text', id : 'colorY', size : 10,disabled : 'disabled' },
+										{ tag: 'label', text: ' K : ' },
+										{ tag: 'input', type : 'text', id : 'colorK', size : 10,disabled : 'disabled' },
+										{ tag: 'br'},
+										{ tag: 'label', text: 'H : ' },
+										{ tag: 'input', type : 'text', id : 'colorH', size : 10,disabled : 'disabled' },
+										{ tag: 'label', text: ' S : ' },
+										{ tag: 'input', type : 'text', id : 'colorS', size : 10,disabled : 'disabled' },
+										{ tag: 'label', text: ' V : ' },
+										{ tag: 'input', type : 'text', id : 'colorV', size : 10,disabled : 'disabled' }
+									]
+										
+									});
+					
+					start.inject(widget.body.empty());
+					Colors.fillValues();
+					//jQuery('#qrCodeGenCont').qrCode({width: 120,height: 120, text: "https://github.com/jeromeetienne/jquery-qrcode"});
+                }
+            };
+
+            /*
+                The "onLoad" event is the very first event triggered when
+                the widget is fully loaded or when the preferences are validated.
+
+                Here, we add MyWidget.onLoad() function as "onLoad" event
+                listener on the widget.
+            */
+            widget.addEvent('onLoad', Colors.onLoad);
+
+        //]]>
+        </script>
+    </head>
+    <body>
+        <p>Loading ...</p>
+    </body>
+</html>
