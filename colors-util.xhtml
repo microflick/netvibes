@@ -26,10 +26,16 @@
         <style type="text/css">
         	.Colors {
         	}
-        	.Colors #colorDiv {
+        	.Colors #colorDiv,
+        	.Colors #colorDivDark,
+        	.Colors #colorDivLight {
         		height : 50px;
         		width : 50px;
         		margin : 20px;
+        	}
+        	.Colors #colorDivDark,
+        	.Colors #colorDivLight {
+        		float : right;
         	}
         	.Colors #rangeR {
         		background-color : white;
@@ -169,6 +175,31 @@
 					widget.getElement('#colorH').value = Colors.rgb2hsv(R, G, B)[0].toFixed(5);
 					widget.getElement('#colorS').value = Colors.rgb2hsv(R, G, B)[1].toFixed(5);
 					widget.getElement('#colorV').value = Colors.rgb2hsv(R, G, B)[2].toFixed(5);
+					
+					Colors.darken(R,G,B);
+					Colors.lighten(R,G,B);
+				},
+				darken : function(r,g,b){
+					var shade = 50;
+					r = parseInt(r);
+					g = parseInt(g);
+					b = parseInt(b);
+					r-= shade;
+					g-= shade;
+					b-= shade;
+					
+					widget.getElement('#colorDivDark').setStyle('background-color','#'+Colors.rgbToHex(r, g, b));
+				},
+				lighten : function(r,g,b){
+					var shade = 50;
+					r = parseInt(r);
+					g = parseInt(g);
+					b = parseInt(b);
+					r+= shade;
+					g+= shade;
+					b+= shade;
+					
+					widget.getElement('#colorDivLight').setStyle('background-color','#'+Colors.rgbToHex(r, g, b));
 				},
 				
                 onLoad: function() {
@@ -182,6 +213,9 @@
 									html: [
 										{ tag: 'h2', text: 'Colors Util' },
 										{ tag: 'div', id: 'colorDiv' },
+										{ tag: 'div', id: 'colorDivDark' },
+										{ tag: 'div', id: 'colorDivLight' },
+										{ tag: 'br'},
 										{ tag: 'label', text: 'R : ' },
 										{ tag: 'input', type : 'text', id : 'colorR', size : 5},
 										{ tag: 'input', type : 'range' , 'min' : 0, 'max' : 255, 'step' : 1, id : 'rangeR', size : 5,
@@ -194,7 +228,7 @@
 										{ tag: 'label', text: ' G : ' },
 										{ tag: 'input', type : 'text', id : 'colorG', size : 5},
 										{ tag: 'input', type : 'range' , 'min' : 0, 'max' : 255, 'step' : 1, id : 'rangeG', size : 5,
-											value: widget.getValue('defR') ,
+											value: widget.getValue('defG') ,
 											events: {
 												input: Colors.onRangeInput
 						                    }
@@ -203,7 +237,7 @@
 										{ tag: 'label', text: ' B : ' },
 										{ tag: 'input', type : 'text', id : 'colorB', size : 5},
 										{ tag: 'input', type : 'range' , 'min' : 0, 'max' : 255, 'step' : 1, id : 'rangeB', size : 5,
-											value: widget.getValue('defR') ,
+											value: widget.getValue('defB') ,
 											events: {
 												input: Colors.onRangeInput
 						                    }
