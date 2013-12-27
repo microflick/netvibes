@@ -70,7 +70,7 @@
         	var iStart = parseInt(nStart,16);
         	if(iStart < 33){iStart = 33;}
         	if(iStart > 65535 - 55){iStart = 65535 - 55}
-        	var uniUList = widget.getElement('#uniUList');
+        	var uniUList = widget.getElement('#uniUList').empty();
         	var uniDec = widget.getElement('#uniDec');
         	var uniHex = widget.getElement('#uniHex');
         	uniDec.value = iStart;
@@ -96,6 +96,28 @@
         	uniCurrDec.value = idStr;
         	uniCurrHex.value = parseInt(idStr).toString(16).toUpperCase();
         },
+        goToFirst : function (){
+        	widget.setValue('defHex','0');
+        	UniChart.createLineItems();
+        },
+        goToLast : function (){
+        	widget.setValue('defHex','ffff');
+        	UniChart.createLineItems();
+        },
+        goToPrev : function (){
+        	var nStart = '0x'+widget.getValue('defHex');
+        	var iStart = parseInt(nStart,16) - 55;
+        	if(iStart < 0){iStart = 0;}
+        	widget.setValue('defHex',iStart.toString(16));
+        	UniChart.createLineItems();
+        },
+        goToNext : function (){
+        	var nStart = '0x'+widget.getValue('defHex');
+        	var iStart = parseInt(nStart,16) + 55;
+        	if(iStart > 65535){iStart = 65535;}
+        	widget.setValue('defHex',iStart.toString(16));
+        	UniChart.createLineItems();
+        },
         onLoad: function () {
         	var chart = UWA.createElement('div',{
         		class: 'UniChart',
@@ -111,7 +133,12 @@
 							{ tag: 'label', text: 'Current Dec : ' },
 							{ tag: 'input', type : 'text', id : 'uniCurrDec', size : 10,disabled : 'disabled'},
 							{ tag: 'label', text: ' Current Hex : ' },
-							{ tag: 'input', type : 'text', id : 'uniCurrHex', size : 10,disabled : 'disabled'}
+							{ tag: 'input', type : 'text', id : 'uniCurrHex', size : 10,disabled : 'disabled'},
+							{ tag: 'br',},
+							{ tag: 'button', text: 'first' ,events : {click : UniChart.goToFirst}},
+							{ tag: 'button', text: 'next' ,events : {click : UniChart.goToNext}},
+							{ tag: 'button', text: 'prev' ,events : {click : UniChart.goToPrev}},
+							{ tag: 'button', text: 'last' ,events : {click : UniChart.goToLast}}
 						]
 					},
 					{ tag: 'div' , id: 'uniContent' ,html : 
