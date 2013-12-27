@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:widget="http://www.netvibes.com/ns/">
+    <head>
+        <!-- Application Metas -->
+        <title>Unicode Chart</title>
+        <meta name="author" content="Arul Rajendiran" />
+        <meta name="apiVersion" content="1.3" />
+        <meta name="debugMode" content="false" />
+        <meta name="strictMode" content="true" />
+        <meta name="description" content="Unicode Chart" />
+        <meta name="keywords" content="regex" />
+        <meta name="version" content="1.0" />
+        <meta name="inline" content="true" />
+
+        <!-- Application Icons -->
+        <!-- <link rel="icon" type="image/gif" href="icon.gif" />-->
+
+        <!-- UWA Environment -->
+        <link rel="stylesheet" type="text/css" href="http://uwa.netvibes.com/lib/c/UWA/assets/css/standalone.css" />
+        <script type="text/javascript" src="http://uwa.netvibes.com/lib/c/UWA/js/UWA_Standalone_Alone.js"></script>
+        
+        <!-- Widget Preferences -->
+        <widget:preferences>
+            <preference type="text" name="defHex" label="Start Value in HexaDecimal (0 to ffff)" defaultValue="0"/>
+        </widget:preferences>
+
+        <!-- Application Styles -->
+        <style type="text/css">
+        
+        	.UniChart #uniContent ul li {
+        		cursor : pointer;
+        		border-radius: 3px 3px 3px 3px;
+			    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+			    display: inline-block;
+			    float: left;
+			    font-size: 18px;
+			    height: 35px;
+			    line-height: 35px;
+			    margin: 6px;
+			    overflow: hidden;
+			    text-align: center;
+			    text-shadow: 1px 1px 0 #FFFFFF;
+			    width: 30px;
+        	}
+        	.UniChart #uniContent ul li:hover {
+	        	background-color:#3c6681;
+			    color: #FFFFFF !important;
+			    text-shadow: none;
+		    }
+
+
+        </style>
+
+<script type="text/javascript">
+//<![CDATA[
+
+    var UniChart = {
+
+        /**
+         * @property {Object} elements - Store all DOM elements.
+         */
+        elements: {},
+
+        /**
+         * Build the chart
+         */
+        createLineItems : function(){
+        	var nStart = '0x'+widget.getValue('defHex');
+        	var iStart = parseInt(nStart,16);
+        	if(iStart < 33){iStart = 33;}
+        	if(iStart > 65535 - 55){iStart = 65535 - 55}
+        	var uniUList = widget.getElement('#uniUList');
+        	var uniDec = widget.getElement('#uniDec');
+        	var uniHex = widget.getElement('#uniHex');
+        	uniDec.value = iStart;
+        	uniHex.value = '' + iStart.toString(16).toUpperCase();
+        	for(var i = iStart ; i < iStart + 54 ; i++){
+        		var sTitle = '&#'+i+';\n'+'U+'+i.toString(16).toUpperCase();
+        		UWA.createElement('li' , {
+        			id : 'i'+i,
+        			title : sTitle,
+        			html:'&#'+i+';',
+        			events : {
+        				mouseover : UniChart.updateCurrVal
+        			}
+        		}).inject(uniUList);
+        	}
+        },
+        updateCurrVal : function(event){
+        	var idStr = '#'+event.target.id;
+        	var currDec = widget.getElement(idStr);
+        	idStr = idStr.substring(2,idStr.length);
+        	var uniCurrDec = widget.getElement('#uniCurrDec');
+        	var uniCurrHex = widget.getElement('#uniCurrHex');
+        	uniCurrDec.value = idStr;
+        	uniCurrHex.value = parseInt(idStr).toString(16).toUpperCase();
+        },
+        onLoad: function () {
+        	var chart = UWA.createElement('div',{
+        		class: 'UniChart',
+				id: 'UniChart',
+				html: [
+					{ tag: 'div', id: 'uniHead' ,html : 
+						[
+							{ tag: 'label', text: 'Start Dec : ' },
+							{ tag: 'input', type : 'text', id : 'uniDec', size : 10,disabled : 'disabled'},
+							{ tag: 'label', text: ' Start Hex : ' },
+							{ tag: 'input', type : 'text', id : 'uniHex', size : 10,disabled : 'disabled'},
+							{ tag: 'br',},
+							{ tag: 'label', text: 'Current Dec : ' },
+							{ tag: 'input', type : 'text', id : 'uniCurrDec', size : 10,disabled : 'disabled'},
+							{ tag: 'label', text: ' Current Hex : ' },
+							{ tag: 'input', type : 'text', id : 'uniCurrHex', size : 10,disabled : 'disabled'}
+						]
+					},
+					{ tag: 'div' , id: 'uniContent' ,html : 
+						[
+							{ tag: 'ul' , id : 'uniUList'}
+						]
+					}
+    	        ]
+    	    }).inject(widget.body.empty());
+        	
+        	UniChart.createLineItems();
+
+        }
+    };
+
+    /**
+     * The "onLoad" event is the very first event triggered when
+     * the widget is fully loaded or when the preferences are validated.
+     * Here, we add Calc.onLoad() function as "onLoad" event
+     * listener on the widget.
+     */
+    widget.addEvents({
+        onLoad: UniChart.onLoad
+    });
+
+//]]>
+</script>
+    </head>
+    <body>
+        <p>Loading...</p>
+    </body>
+</html>
