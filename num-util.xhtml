@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:widget="http://www.netvibes.com/ns/">
+    <head>
+        <!-- Application Metas -->
+        <title>Number Util</title>
+        <meta name="author" content="Arul Rajendiran (IXK)" />
+        <meta name="apiVersion" content="1.3" />
+        <meta name="debugMode" content="false" />
+        <meta name="strictMode" content="true" />
+        <meta name="description" content="number conversion" />
+        <meta name="keywords" content="regex" />
+        <meta name="version" content="1.0" />
+        <meta name="inline" content="true" />
+
+        <!-- Application Icons -->
+        <!-- <link rel="icon" type="image/gif" href="icon.gif" />-->
+
+        <!-- UWA Environment -->
+        <link rel="stylesheet" type="text/css" href="http://uwa.netvibes.com/lib/c/UWA/assets/css/standalone.css" />
+        <script type="text/javascript" src="http://uwa.netvibes.com/lib/c/UWA/js/UWA_Standalone_Alone.js"></script>
+        <script type="text/javascript" src="http://uwa.netvibes.com/lib/c/UWA/js/UWA_Controls_Flash.js"></script>
+        
+        <!-- Widget Preferences -->
+        <widget:preferences>
+        </widget:preferences>
+
+        <!-- Application Styles -->
+        <style type="text/css">
+
+
+        </style>
+
+<script type="text/javascript">
+//<![CDATA[
+
+    var NumUtil = {
+    	ipText : null,
+    	opText : null,
+
+        /**
+         * @property {Object} elements - Store all DOM elements.
+         */
+        elements: {},
+
+        /**
+         * Build the calculator
+         */
+        swapIpAndOp: function() {
+         	if(NumUtil.opText.value != ''){
+         		NumUtil.ipText.value = NumUtil.opText.value;
+             	NumUtil.opText.value = '';
+         	}
+        },
+        decToHex : function () {
+        	 var sIp = NumUtil.ipText.value;
+        	 NumUtil.opText.value = parseInt(sIp).toString(16).toUpperCase();
+        },
+        hexToDec : function () {
+          	 var sIp = '0x'+NumUtil.ipText.value.toLowerCase();
+           	 NumUtil.opText.value = parseInt(sIp,16);
+        },
+        decToOctal : function () {
+       	 var sIp = NumUtil.ipText.value;
+       	 NumUtil.opText.value = parseInt(sIp).toString(8);
+        },
+        octalToDec : function (){
+        	var sIp = '0'+NumUtil.ipText.value;
+        	NumUtil.opText.value = parseInt(sIp,8);
+        },
+        decToBin : function () {
+        	var sIp = NumUtil.ipText.value;
+        	NumUtil.opText.value = parseInt(sIp).toString(2);
+        },
+        binToDec : function (){
+        	var sIp = NumUtil.ipText.value;
+        	NumUtil.opText.value = parseInt(sIp,2);
+        },
+        onLoad: function () {
+            widget.body.setStyle('padding', 10);
+            widget.setTitle(UWA.i18n("Number Util"));
+            
+            start = widget.createElement('div', {
+                'class' : 'TextUtil',
+                html: [
+                       {tag: 'label',text : UWA.i18n("Input")+ ': '},
+                       {tag: 'input',type : 'text',id : 'ipText',size : '30'},
+                       {tag: 'input',type: 'button',value : UWA.i18n("Swap"),
+                           events: {
+                               click: NumUtil.swapIpAndOp
+                           }
+                       },
+                       {tag: 'br'},
+                       {tag: 'label',text : UWA.i18n("Converted")+ ': '},
+                       { tag: 'input',type : 'text',id : 'opText',size : '50',},
+                       {tag: 'br'},
+                       {tag: 'br'},
+                       {tag: 'input',type: 'button', value : UWA.i18n("Dec to Hex"),
+                           events: {
+                               click: NumUtil.decToHex
+                           }
+                       },
+                       {tag: 'input',type: 'button', value : UWA.i18n("Hex to Dec"),
+                           events: {
+                               click: NumUtil.hexToDec
+                           }
+                       },
+                       {tag: 'input',type: 'button', value : UWA.i18n("Dec to Oct"),
+                           events: {
+                               click: NumUtil.decToOctal
+                           }
+                       },
+                       {tag: 'input',type: 'button', value : UWA.i18n("Oct to Dec"),
+                           events: {
+                               click: NumUtil.octalToDec
+                           }
+                       },
+                       {tag: 'input',type: 'button', value : UWA.i18n("Dec to Bin"),
+                           events: {
+                               click: NumUtil.decToBin
+                           }
+                       },
+                       {tag: 'input',type: 'button', value : UWA.i18n("Bin to Dec"),
+                           events: {
+                               click: NumUtil.binToDec
+                           }
+                       }
+                   ],
+            });
+        	
+            start.inject(widget.body.empty());
+            
+            NumUtil.ipText = widget.getElement('#ipText');
+            NumUtil.opText = widget.getElement('#opText');
+
+        }
+    };
+
+    /**
+     * The "onLoad" event is the very first event triggered when
+     * the widget is fully loaded or when the preferences are validated.
+     * Here, we add Calc.onLoad() function as "onLoad" event
+     * listener on the widget.
+     */
+    widget.addEvents({
+        onLoad: NumUtil.onLoad
+    });
+    
+    if (widget.launched) {
+    	NumUtil.onLoad();
+    }
+
+//]]>
+</script>
+    </head>
+    <body>
+        <p>Loading...</p>
+    </body>
+</html>
